@@ -1,6 +1,6 @@
 # Tarea-2-Spotifind-
 
-![Logo del Proyecto](0314f7979f8a61d1060ab0c7a2ee25c921787a24)
+![Logo de Spotify](https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg)
 
 ## Pasos para Compilar y Ejecutar el Programa
 
