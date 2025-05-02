@@ -29,7 +29,7 @@ typedef struct {
 void mostrarMenuPrincipal() {
   limpiarPantalla();
   puts("========================================");
-  puts("     Base de Datos de Películas");
+  puts("     Base de Datos de canciones");
   puts("========================================");
 
   puts("1) Cargar Canciones");
@@ -257,7 +257,6 @@ int main() {
 
   Map *canciones_byid = map_create(is_equal_str);
   Map *canciones_bygenres = map_create(is_equal_str);
-
 
   do {
     mostrarMenuPrincipal();
