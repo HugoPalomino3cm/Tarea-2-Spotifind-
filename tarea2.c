@@ -29,7 +29,7 @@ typedef struct {
 void mostrarMenuPrincipal() {
   limpiarPantalla();
   puts("========================================");
-  puts("     Base de Datos de canciones");
+  puts("     Base de Datos de Películas");
   puts("========================================");
 
   puts("1) Cargar Canciones");
@@ -254,9 +254,14 @@ void buscar_por_genero(Map *canciones_bygenres) {
 
 int main() {
   char opcion; // Variable para almacenar una opción ingresada por el usuario
+               // (sin uso en este fragmento)
 
+  // Crea un mapa para almacenar películas, utilizando una función de
+  // comparación que trabaja con claves de tipo string.
   Map *canciones_byid = map_create(is_equal_str);
   Map *canciones_bygenres = map_create(is_equal_str);
+
+  // Recuerda usar un mapa por criterio de búsqueda
 
   do {
     mostrarMenuPrincipal();
