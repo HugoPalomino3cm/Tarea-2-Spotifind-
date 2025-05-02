@@ -1,6 +1,6 @@
 # Tarea-2-Spotifind-
 
-![Logo del Proyecto](8bf28eb00e71fffd81e7339ce70b2a0cc51fac2b)
+![Logo del Proyecto](0314f7979f8a61d1060ab0c7a2ee25c921787a24)
 
 ## Pasos para Compilar y Ejecutar el Programa
 
