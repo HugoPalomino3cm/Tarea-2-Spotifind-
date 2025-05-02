@@ -1,5 +1,6 @@
 # Tarea-2-Spotifind-
 
+![Logo del Proyecto](imagen de posible logo.jpg)
 
 ## Pasos para Compilar y Ejecutar el Programa
 
