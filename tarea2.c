@@ -5,6 +5,13 @@
 #include <stdlib.h>
 #include <string.h>
 
+// Definición de colores ANSI para salida en consola
+#define ROJO "\033[0;31m"      // Rojo oscuro para mensajes de error o advertencia
+#define VERDE "\033[0;32m"     // Verde oscuro para mensajes de éxito
+#define AZUL "\033[0;34m"      // Azul oscuro para mensajes informativos
+#define BLANCO "\033[1;37m"    // Blanco para mensaje de salida
+#define RESETEAR "\033[0m"     // Resetea el color a predeterminado
+
 typedef struct {
   char id[100];           // ID de la canción
   List *artists;          // Lista de artistas ya que pueden ser varios 
@@ -14,9 +21,7 @@ typedef struct {
   char track_genre[100];  // Género de la pista 
 } Song;
 
-
 // ESTRUCTURA CREADA PARA LA PLAYLIST PALTANEITOR (seccion de preguntas 5,6,7)
-
 typedef struct {
   char name[100];          // Nombre de la lista de reproduccion
   List *songs;            // Lista de canciones en la lista de reproduccion
@@ -24,66 +29,44 @@ typedef struct {
 
 /* AVISO IMPORTANTE NO BORRE VARIOS COMENTARIOS PERO MODIFIQUE LA WEAS ASI QUE PUEDE QUE SIGAN HABIENDO COMENTARIOS DEL CODIGO PROPUESTO PORSIACASO */
 
-
 // Menú principal
 void mostrarMenuPrincipal() {
   limpiarPantalla();
-  puts("========================================");
-  puts("     Base de Datos de canciones");
-  puts("========================================");
-
-  puts("1) Cargar Canciones");
-  puts("2) Buscar por género");
-  puts("3) Buscar por artista");
-  puts("4) Buscar por tempo");
-  puts("5) Crear lista de reproducción");  // nos piden que la usuaria ingrese la velocidad de las canciones deseadas (lentas (80 BPM),moderadas (80 y 120BPM) y rapidas (mayor a 120BPM))
-  puts("6) Agregar cancion a la lista");  // si es que existe la lista deaaa nasheeeee
-  puts("7) Mostrar canciones de una lista");  //si es que existe hay que verificar de que exista
-  puts("8) Salir");
+  printf("%s╔════════════════════════════════════════╗\n", AZUL);
+  printf("║            🎵 Spotifind 🎵             ║\n");
+  printf("╚════════════════════════════════════════╝\n");
+  printf("  1) Cargar Canciones\n");
+  printf("  2) Buscar por género\n");
+  printf("  3) Buscar por artista\n");
+  printf("  4) Buscar por tempo\n");
+  printf("  5) Crear lista de reproducción\n");
+  printf("  6) Agregar canción a la lista\n");
+  printf("  7) Mostrar canciones de una lista\n");
+  printf("%s  8) Salir%s\n", ROJO, AZUL);
+  printf("══════════════════════════════════════════%s\n", RESETEAR);
 }
 
-/** NO BORRE LOS COMENTARIOS DE ESTAS FUNCIONES, PERO EN MI HUMILDE OPINION BORREMOS LOS COMENTARIOS DE ESTA WEAS 
-me dan toc**/
-
-/**
- * Compara dos claves de tipo string para determinar si son iguales.
- * Esta función se utiliza para inicializar mapas con claves de tipo string.
- *
- * @param key1 Primer puntero a la clave string.
- * @param key2 Segundo puntero a la clave string.
- * @return Retorna 1 si las claves son iguales, 0 de lo contrario.
- */
 int is_equal_str(void *key1, void *key2) {
   return strcmp((char *)key1, (char *)key2) == 0;
 }
 
-/**
- * Compara dos claves de tipo entero para determinar si son iguales.
- * Esta función se utiliza para inicializar mapas con claves de tipo entero.
- *
- * @param key1 Primer puntero a la clave entera.
- * @param key2 Segundo puntero a la clave entera.
- * @return Retorna 1 si las claves son iguales, 0 de lo contrario.
- */
 int is_equal_int(void *key1, void *key2) {
   return *(int *)key1 == *(int *)key2; // Compara valores enteros directamente
 }
 
-
 /* YA MODIFIQUE EL ARCHIVO EN EL QUE SE TENIA QUE LEER */
-
 void cargar_canciones(Map *canciones_byid, Map *canciones_bygenres) {
-  
+  // Abrir el archivo CSV que contiene los datos de las canciones
   FILE *archivo = fopen("data/song_dataset_.csv", "r");
   if (archivo == NULL) {
-    perror("Error al abrir el archivo");
+    printf("Error: No se pudo abrir el archivo de datos.\n");
     return;
   }
 
   char **campos;
 
-   // YA REVISE Y SI SE SEPARAN POR COMAS :V 
-
+  // YA REVISE Y SI SE SEPARAN POR COMAS :V 
+  // Leer la primera línea (encabezado) del archivo CSV
   campos = leer_linea_csv(archivo, ','); 
   if (campos == NULL) {
     printf("Error: No se pudo leer el encabezado del archivo.\n");
@@ -95,19 +78,20 @@ void cargar_canciones(Map *canciones_byid, Map *canciones_bygenres) {
   }
   
   int count = 0; // Contador para las canciones cargadas
+  // Leer cada línea del archivo CSV hasta el final
   while ((campos = leer_linea_csv(archivo, ',')) != NULL) {
     // ACA ESTOY AÑADIENDO LAS COSAS ACA SI ESTOY MODIFICANDO YO PALTADEUSSS
-
+    // Asignar memoria para una nueva estructura Song
     Song *cancion = (Song *)malloc(sizeof(Song));
     if (cancion == NULL) {
-      printf("Error: No se pudo asignar memoria para la canción %d.\n", count + 1);
+      printf("Error: No se pudo asignar memoria para la canción %s%d%s.\n", ROJO, count + 1, RESETEAR);
       fclose(archivo);
       printf("Presione una tecla para continuar...\n");
-      while (getchar() != '\n');
-      getchar();
+      presioneTeclaParaContinuar();
       return;
     }
-    printf("Memoria asignada para canción %d\n", count + 1); // Printeo solo cuando se asigna memoria
+    // Imprimir mensaje de progreso con solo el número en azul
+    printf("Cargando canción %s%d%s...\n", AZUL, count + 1, RESETEAR); // Printeo solo cuando se asigna memoria
 
     // Copia los campos con manejo seguro
     strncpy(cancion->id, campos[0] ? campos[0] : "", sizeof(cancion->id) - 1);
@@ -138,8 +122,7 @@ void cargar_canciones(Map *canciones_byid, Map *canciones_bygenres) {
 
     // si es que se te ocurre podriamos añadir algo demas ya que hay muchas secciones que no ocupamos una que se me ocurre es (popularity)
     // o también duration podriamos hacer alguna wea exótica con 
-
-    // Inserta la canción en el mapa usando el ID como clave
+    // Insertar la canción en el mapa usando el ID como clave
     map_insert(canciones_byid, cancion->id, cancion);
     
     // Busca el género en el mapa canciones_bygenres
@@ -155,30 +138,29 @@ void cargar_canciones(Map *canciones_byid, Map *canciones_bygenres) {
         getchar();
         return;
       }
+      // Añadir la canción a la nueva lista e insertarla en el mapa
       list_pushBack(new_list, cancion);
       map_insert(canciones_bygenres, cancion->track_genre, new_list);
     } else {
+      // Si existe, añadir la canción a la lista existente
       List *genre_list = (List *)genre_pair->value;
       list_pushBack(genre_list, cancion);
     }
     count++;
   }
-  fclose(archivo); // cerramos el archivo despues despues de leer todas las lineas
+  // cerramos el archivo despues despues de leer todas las lineas
+  fclose(archivo);
 
-  // Verifica si se cargaron todas las canciones (146 en tu CSV)
+  // Mostrar mensaje de éxito o advertencia según el número de canciones cargadas
   if (count == 114000) {
-    printf("Se cargaron todas las canciones (%d) exitosamente.\n", count);
+    printf("Éxito: Se cargaron todas las canciones (%s%d%s) correctamente.\n", VERDE, count, RESETEAR);
   } else {
-    printf("No se cargaron todas las canciones. Se cargaron %d de 114000.\n", count);
+    printf("Advertencia: No se cargaron todas las canciones. Se cargaron %s%d%s de 114000.\n", ROJO, count, RESETEAR);
   }
-  while (getchar() != '\n');
-  getchar();
+  printf("Presione una tecla para continuar...\n");
+  presioneTeclaParaContinuar();
 }
 
-
-/**
- * Busca por artista
- */
 void buscar_por_tempo(Map *canciones_byid) {
   limpiarPantalla();
   int opcion;
@@ -218,13 +200,12 @@ void buscar_por_tempo(Map *canciones_byid) {
   }
 }
 
-
 void buscar_por_genero(Map *canciones_bygenres) {
   limpiarPantalla();
   
   char genero[100];
 
-  printf("Ingrese el género de la cancion: ");
+  printf("Ingrese el género de la canción: ");
   scanf("%s", genero); 
 
   MapPair *pair = map_search(canciones_bygenres, genero);
@@ -260,7 +241,6 @@ int main() {
   Map *canciones_bygenres = map_create(is_equal_str);
 
   // Recuerda usar un mapa por criterio de búsqueda
-
   do {
     mostrarMenuPrincipal();
     printf("Ingrese su opción: ");
@@ -289,7 +269,7 @@ int main() {
       //mostrar_canciones_lista(playlists);
       break;
     case '8':
-      //printf("Saliendo de la aplicación...\n");
+      printf("%sSaliendo de la aplicación...%s\n", BLANCO, RESETEAR);
       break;
     default:
       printf("Opción inválida\n");
