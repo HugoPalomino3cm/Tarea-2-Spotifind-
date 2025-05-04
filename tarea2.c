@@ -250,39 +250,33 @@ void buscar_por_genero(Map *canciones_bygenres) {
 void buscar_por_artista(Map *canciones_byartist) {
   limpiarPantalla();
   
-  char artista_buscado[100];
+  char artista[100];
   printf("Ingrese el nombre del artista: ");
-  scanf(" %[^\n]", artista_buscado); // Lee la entrada con espacios
+  scanf(" %[^\n]", artista); // Lee el nombre completo, incluyendo espacios
 
-  // Buscar el artista en el mapa
-  MapPair *pair = map_search(canciones_byartist, artista_buscado);
+  MapPair *pair = map_search(canciones_byartist, artista);
   if (pair != NULL) {
     List *canciones = (List *)pair->value;
     Song *cancion = (Song *)list_first(canciones);
-    int canciones_encontradas = 0;
-
-    printf("\nCanciones del artista %s:\n", artista_buscado);
+    
+    printf("\nCanciones del artista %s:\n", artista);
     while (cancion != NULL) {
       printf("ID: %s, Título: %s, Álbum: %s, Género: %s, Tempo: %.2f, Artistas: ",
              cancion->id, cancion->track_name, cancion->album_name,
              cancion->track_genre, cancion->tempo);
       // Imprimir lista de artistas
-      char *artista = (char *)list_first(cancion->artists);
-      while (artista != NULL) {
-        printf("%s", artista);
-        artista = (char *)list_next(cancion->artists);
-        if (artista != NULL) printf(", ");
+      char *art = (char *)list_first(cancion->artists);
+      while (art != NULL) {
+        printf("%s", art);
+        art = (char *)list_next(cancion->artists);
+        if (art != NULL) printf(", ");
       }
       printf("\n");
-      canciones_encontradas++;
       cancion = (Song *)list_next(canciones);
     }
-    printf("%sSe encontraron %d canciones del artista %s%s\n", VERDE, canciones_encontradas, artista_buscado, RESETEAR);
   } else {
-    printf("%sNo se encontraron canciones del artista %s%s\n", ROJO, artista_buscado, RESETEAR);
+    printf("No se encontraron canciones del artista %s\n", artista);
   }
-
-  printf("\nPresione una tecla para continuar...\n");
   presioneTeclaParaContinuar();
 }
 
