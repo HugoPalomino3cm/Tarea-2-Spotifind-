@@ -55,7 +55,7 @@ int is_equal_int(void *key1, void *key2) {
 }
 
 /* YA MODIFIQUE EL ARCHIVO EN EL QUE SE TENIA QUE LEER */
-void cargar_canciones(Map *canciones_byid, Map *canciones_bygenres, Map *canciones_byartist) {
+void cargar_canciones(Map *canciones_byid, Map *canciones_bygenres, Map *canciones_byartist, Map *canciones_by_tempo) {
   // Abrir el archivo CSV que contiene los datos de las canciones
   FILE *archivo = fopen("data/song_dataset_.csv", "r");
   if (archivo == NULL) {
@@ -161,8 +161,42 @@ void cargar_canciones(Map *canciones_byid, Map *canciones_bygenres, Map *cancion
       artista = (char *)list_next(cancion->artists);
     }
 
+    char *categoria ;
+    if(cancion->tempo < 80.0)
+    {
+      categoria = "Lentas" ;
+    }else if(cancion->tempo >= 80.0 && cancion->tempo <= 120.0)
+    {
+      categoria = "Moderadas" ;
+    }else
+    {
+      categoria = "Rápidas" ;
+    }
+    MapPair *pair_tempo = map_search(canciones_by_tempo, categoria);
+    if(pair_tempo == NULL)
+    {
+      List *new_list = list_create() ;
+      if(new_list == NULL)
+      {
+        printf("ERROR: NO SE PUDO CREAR UNA LISTA PARA LA CATEGORÍA %s\n", categoria);
+        free(cancion);
+        fclose(archivo);
+        presioneTeclaParaContinuar();
+        return;
+      }
+      list_pushBack(new_list, cancion) ;
+      char *copy_category = strdup(categoria) ;
+      map_insert(canciones_by_tempo, copy_category, new_list);
+    }
+    else
+    {
+      list_pushBack((List *)pair_tempo->value, cancion);
+    }
+
     count++;
   }
+
+
   fclose(archivo);
 
   // Mostrar mensaje de éxito o advertencia según el número de canciones cargadas
@@ -187,31 +221,38 @@ void buscar_por_tempo(Map *canciones_byid) {
   printf("Ingrese su opción (1-3): ");
   scanf("%d", &opcion);
 
-  float min_tempo, max_tempo;
-  char categoria[20];
+  
+  char *categoria ;
   
   /** Define los rangos de tempo según la opción */
   switch (opcion) {
     case 1:
-      strcpy(categoria, "Lentas");
-      min_tempo = 0.0;
-      max_tempo = 80.0;
+      categoria = "Lentas";
+      
       break;
     case 2:
-      strcpy(categoria, "Moderadas");
-      min_tempo = 80.0;
-      max_tempo = 120.0;
+      categoria = "Moderadas";
+
       break;
     case 3:
-      strcpy(categoria, "Rápidas");
-      min_tempo = 120.0;
-      // segun yo esto lo tenemos que cambiar  lo de max_tempo pero de ahi lo vemos dea
-      max_tempo = 9999.0; // Valor arbitrario alto
+      categoria = "Rápidas";
+      
       break;
     default:
       printf("Opción inválida\n");
+      presioneTeclaParaContinuar();
       return;
   }
+  MapPair *pair = map_search(canciones_by_tempo, categoria);
+  if (pair != NULL) {
+    List *canciones = (List *)pair->value;
+    char titulo[150];
+    snprintf(titulo, sizeof(titulo), "Canciones %s", categoria);
+    show_songs(canciones, titulo);
+  } else {
+    printf("%sNo se encontraron canciones en la categoría %s%s\n", ROJO, categoria, RESETEAR);
+  }
+  presioneTeclaParaContinuar();
 }
 
 void buscar_por_genero(Map *canciones_bygenres) {
@@ -220,6 +261,7 @@ void buscar_por_genero(Map *canciones_bygenres) {
   char genero[100];
 
   printf("Ingrese el género de la canción: ");
+  printf("Búsquedas recomendadas: “acoustic”, “samba”, “soul”, “anime” \n") ; 
   scanf("%s", genero); 
 
   MapPair *pair = map_search(canciones_bygenres, genero);
@@ -280,15 +322,35 @@ void buscar_por_artista(Map *canciones_byartist) {
   presioneTeclaParaContinuar();
 }
 
+void show_songs(List *songs, const char *titulo)
+{
+  printf("\n%s%s:%s\n", AZUL, titulo, RESETEAR);
+  Song *cancion = (Song *)list_first(canciones);
+  if(cancion == NULL)
+  {
+    printf("%sNo se encontraron canciones.%s\n", ROJO, RESETEAR);
+    return;
+  }
+  while(cancion != NULL)
+  {
+    printf("Titulo : %s\n", cancion->track_name);
+    printf("Album : %s\n", cancion->album_name);
+    printf("Genero : %s\n", cancion->track_genre);
+    printf("Tempo : %s\n", cancion->tempo);
+    //char *artist = (char *)list_first(cancion->artists);
+    //falta algo para mostrar artistas
+  }
+}
+
 int main() {
   char opcion; // Variable para almacenar una opción ingresada por el usuario
                // (sin uso en este fragmento)
 
   Map *canciones_byid = map_create(is_equal_str);
   Map *canciones_bygenres = map_create(is_equal_str);
-  // creamos este mapa para las canciones para que a la hora de buscar a los artistas tenga una complejidad menor por eso lo hacemos 
-  Map *canciones_byartist = map_create(is_equal_str);
 
+  Map *canciones_byartist = map_create(is_equal_str);
+  Map *canciones_by_tempo = map_create(is_equal_str) ;
   // Recuerda usar un mapa por criterio de búsqueda
   do {
     mostrarMenuPrincipal();
@@ -297,7 +359,7 @@ int main() {
 
     switch (opcion) {
     case '1':
-      cargar_canciones(canciones_byid, canciones_bygenres,canciones_byartist);
+      cargar_canciones(canciones_byid, canciones_bygenres,canciones_byartist, canciones_by_tempo);
       break;
     case '2':
       buscar_por_genero(canciones_bygenres);
@@ -307,7 +369,7 @@ int main() {
       buscar_por_artista(canciones_byartist);
       break;
     case '4':
-      buscar_por_tempo(canciones_byid);
+      buscar_por_tempo(canciones_by_tempo);
       break;
     case '5':
       //crear_lista_reproduccion(playlists);
