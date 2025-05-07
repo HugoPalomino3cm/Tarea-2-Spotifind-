@@ -13,7 +13,7 @@
 #define RESETEAR "\033[0m"     // Resetea el color a predeterminado
 
 typedef struct {
-  char id[100];           // ID de la canción
+  char id[100];           // ID de la canción 
   List *artists;          // Lista de artistas ya que pueden ser varios 
   char album_name[100];   // Nombre del álbum
   char track_name[100];   // Nombre de la pista
@@ -64,7 +64,6 @@ void cargar_canciones(Map *canciones_byid, Map *canciones_bygenres, Map *cancion
   }
 
   char **campos;
-
   // Leer la primera línea (encabezado) del archivo CSV
   campos = leer_linea_csv(archivo, ','); 
   if (campos == NULL) {
@@ -75,7 +74,9 @@ void cargar_canciones(Map *canciones_byid, Map *canciones_bygenres, Map *cancion
     return;
   }
   
-  int count = 0; // Contador para las canciones cargadas
+  int count = 0; // Contador para las canciones cargadas CREO QYE HAY QUE BORRAR PORQUE DEBE SER MODULAR PARA OTROS ARCHIVOS
+  int lentas = 0, moderadas = 0, rapidas = 0;
+
   // Leer cada línea del archivo CSV hasta el final
   while ((campos = leer_linea_csv(archivo, ',')) != NULL) {
     // Asignar memoria para una nueva estructura Song
@@ -119,10 +120,10 @@ void cargar_canciones(Map *canciones_byid, Map *canciones_bygenres, Map *cancion
     map_insert(canciones_byid, cancion->id, cancion);
     
     // Insertar en el mapa por género
-    MapPair *genre_pair = map_search(canciones_bygenres, cancion->track_genre);
+    MapPair *genre_pair = map_search(canciones_bygenres, cancion->track_genre); //BUSCA SI YA EXISTE EL GENERO
     if (genre_pair == NULL) {
       List *new_list = list_create();
-      if (new_list == NULL) {
+      if (new_list == NULL) { //MANEJO DE QUE NO SE HAYA PODIDO CREAR
         printf("Error: No se pudo crear una lista para el género %s.\n", cancion->track_genre);
         free(cancion);
         fclose(archivo);
@@ -130,11 +131,11 @@ void cargar_canciones(Map *canciones_byid, Map *canciones_bygenres, Map *cancion
         presioneTeclaParaContinuar();
         return;
       }
-      list_pushBack(new_list, cancion);
-      map_insert(canciones_bygenres, cancion->track_genre, new_list);
+      list_pushBack(new_list, cancion);//AGREGAMOS LA CANCION AL FINAL DE LA LISTA
+      map_insert(canciones_bygenres, cancion->track_genre, new_list); //AGREGAMOS LA LISTA AL MAPA 
     } else {
-      List *genre_list = (List *)genre_pair->value;
-      list_pushBack(genre_list, cancion);
+      List *genre_list = (List *)genre_pair->value; //EN CASO DE NO EXISTIR CREAMOS LA LISTA DEL GENERO
+      list_pushBack(genre_list, cancion); //AGREGAMOS LA CANCION A LA LISTA
     }
 
     // Insertar en el mapa por artista
@@ -165,12 +166,15 @@ void cargar_canciones(Map *canciones_byid, Map *canciones_bygenres, Map *cancion
     if(cancion->tempo < 80.0)
     {
       categoria = "Lentas" ;
+      lentas++;
     }else if(cancion->tempo >= 80.0 && cancion->tempo <= 120.0)
     {
       categoria = "Moderadas" ;
+      moderadas++;
     }else
     {
       categoria = "Rápidas" ;
+      rapidas++;
     }
     MapPair *pair_tempo = map_search(canciones_by_tempo, categoria);
     if(pair_tempo == NULL)
@@ -185,8 +189,7 @@ void cargar_canciones(Map *canciones_byid, Map *canciones_bygenres, Map *cancion
         return;
       }
       list_pushBack(new_list, cancion) ;
-      char *copy_category = strdup(categoria) ;
-      map_insert(canciones_by_tempo, copy_category, new_list);
+      map_insert(canciones_by_tempo, categoria, new_list);
     }
     else
     {
@@ -199,17 +202,80 @@ void cargar_canciones(Map *canciones_byid, Map *canciones_bygenres, Map *cancion
 
   fclose(archivo);
 
-  // Mostrar mensaje de éxito o advertencia según el número de canciones cargadas
+  // Mostrar mensaje de éxito o advertencia según el número de canciones cargadas 
+
+  //BORRAR O HACER MODULAR YA QUE TIENE QUE ABRIR MULTIPLES ARCHIVOS CSV SEGUN PROFESOR
   if (count == 114000) {
     printf("Éxito: Se cargaron todas las canciones (%s%d%s) correctamente.\n", VERDE, count, RESETEAR);
+    printf("Canciones por tempo: Lentas=%d, Moderadas=%d, Rápidas=%d\n", lentas, moderadas, rapidas);
   } else {
     printf("Advertencia: No se cargaron todas las canciones. Se cargaron %s%d%s de 114000.\n", ROJO, count, RESETEAR);
   }
-  printf("Presione una tecla para continuar...\n");
+  presioneTeclaParaContinuar();
+
+}
+
+void show_artists(List *list_artists)
+{
+  if(list_artists == NULL)
+  {
+    printf("Artistas: Desconocido\n");
+    return;
+  }
+
+  printf("Artistas : ");
+  char *artist = (char *)list_first(list_artists) ;
+  if (artist == NULL)
+  {
+    printf("Desconocido\n");
+    return;
+  }
+  while(artist != NULL)
+  {
+    printf("%s", artist);
+    artist = (char *)list_next(list_artists);
+    if (artist != NULL)
+    {
+      printf(", ");
+    }
+  }
+  printf("\n");
+}
+
+
+void show_songs(List *songs)
+{
+  limpiarPantalla();
+  if(songs == NULL)return;
+
+  printf("\nLista de canciones\n");
+  Song *cancion = (Song *)list_first(songs);
+  int song_number = 1;
+
+  if(cancion == NULL)
+  {
+    printf("%sNo se encontraron canciones.%s\n", ROJO, RESETEAR);
+    presioneTeclaParaContinuar();
+    return;
+  }
+  while(cancion != NULL)
+  {
+    printf("Cancion %d\n", song_number);
+    printf("  Titulo : %s\n", cancion->track_name); //AGREGAR CONDICIONES PARA PONER DECSONOCIDO EN CASO DE Q NO EXISTA
+    printf("  Album : %s\n", cancion->album_name);
+    printf("  Genero : %s\n", cancion->track_genre);
+    printf("  Tempo : %.2f BPM\n", cancion->tempo);
+
+    show_artists(cancion->artists);
+    printf("-------------------------------------\n");
+    cancion = (Song *)list_next(songs);
+    song_number++;
+
+  }
   presioneTeclaParaContinuar();
 }
 
-void buscar_por_tempo(Map *canciones_byid) {
+void buscar_por_tempo(Map *canciones_by_tempo) {
   limpiarPantalla();
   int opcion;
   
@@ -223,34 +289,30 @@ void buscar_por_tempo(Map *canciones_byid) {
 
   
   char *categoria ;
-  
-  /** Define los rangos de tempo según la opción */
+  // Define los rangos de tempo según la opción 
   switch (opcion) {
     case 1:
       categoria = "Lentas";
-      
       break;
     case 2:
       categoria = "Moderadas";
-
       break;
     case 3:
       categoria = "Rápidas";
-      
       break;
     default:
       printf("Opción inválida\n");
       presioneTeclaParaContinuar();
       return;
   }
-  MapPair *pair = map_search(canciones_by_tempo, categoria);
-  if (pair != NULL) {
-    List *canciones = (List *)pair->value;
-    char titulo[150];
-    snprintf(titulo, sizeof(titulo), "Canciones %s", categoria);
-    show_songs(canciones, titulo);
+  MapPair *searched = map_search(canciones_by_tempo, categoria);
+  if (searched != NULL) {
+    List *canciones = (List *)searched->value;
+    printf("\nCanciones con categoría de TEMPO %s\n", categoria);
+    show_songs(canciones);
   } else {
     printf("%sNo se encontraron canciones en la categoría %s%s\n", ROJO, categoria, RESETEAR);
+    presioneTeclaParaContinuar();
   }
   presioneTeclaParaContinuar();
 }
@@ -322,25 +384,9 @@ void buscar_por_artista(Map *canciones_byartist) {
   presioneTeclaParaContinuar();
 }
 
-void show_songs(List *songs, const char *titulo)
-{
-  printf("\n%s%s:%s\n", AZUL, titulo, RESETEAR);
-  Song *cancion = (Song *)list_first(canciones);
-  if(cancion == NULL)
-  {
-    printf("%sNo se encontraron canciones.%s\n", ROJO, RESETEAR);
-    return;
-  }
-  while(cancion != NULL)
-  {
-    printf("Titulo : %s\n", cancion->track_name);
-    printf("Album : %s\n", cancion->album_name);
-    printf("Genero : %s\n", cancion->track_genre);
-    printf("Tempo : %s\n", cancion->tempo);
-    //char *artist = (char *)list_first(cancion->artists);
-    //falta algo para mostrar artistas
-  }
-}
+
+
+
 
 int main() {
   char opcion; // Variable para almacenar una opción ingresada por el usuario
@@ -350,7 +396,7 @@ int main() {
   Map *canciones_bygenres = map_create(is_equal_str);
 
   Map *canciones_byartist = map_create(is_equal_str);
-  Map *canciones_by_tempo = map_create(is_equal_str) ;
+  Map *canciones_by_tempo = map_create(is_equal_str);
   // Recuerda usar un mapa por criterio de búsqueda
   do {
     mostrarMenuPrincipal();
