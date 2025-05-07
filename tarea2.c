@@ -326,27 +326,14 @@ void buscar_por_genero(Map *canciones_bygenres) {
   printf("Búsquedas recomendadas: “acoustic”, “samba”, “soul”, “anime” \n") ; 
   scanf("%s", genero); 
 
-  MapPair *pair = map_search(canciones_bygenres, genero);
-  if (pair != NULL) {
-    List *canciones = pair->value;
-    Song *cancion = list_first(canciones);
+  MapPair *searched_genre = map_search(canciones_bygenres, genero);
+  if (searched_genre != NULL) {
+    List *canciones = searched_genre->value;
     
     printf("\nCanciones del género %s:\n", genero);
-    while (cancion != NULL) {
-      printf("ID: %s, Título: %s, Álbum: %s, Género: %s, Tempo: %.2f, Artistas: ",
-             cancion->id, cancion->track_name, cancion->album_name,
-             cancion->track_genre, cancion->tempo);
-      // Imprimir lista de artistas
-      char *artista = (char *)list_first(cancion->artists);
-      while (artista != NULL) {
-        printf("%s", artista);
-        artista = (char *)list_next(cancion->artists);
-        if (artista != NULL) printf(", ");
-      }
-      printf("\n");
-      cancion = list_next(canciones);
-    }
-  } else {
+    show_songs(canciones);
+  }
+  else {
     printf("No se encontraron canciones del género %s\n", genero);
   }
 }
@@ -360,24 +347,10 @@ void buscar_por_artista(Map *canciones_byartist) {
 
   MapPair *pair = map_search(canciones_byartist, artista);
   if (pair != NULL) {
-    List *canciones = (List *)pair->value;
-    Song *cancion = (Song *)list_first(canciones);
+    List *songs = (List *)pair->value;
     
     printf("\nCanciones del artista %s:\n", artista);
-    while (cancion != NULL) {
-      printf("ID: %s, Título: %s, Álbum: %s, Género: %s, Tempo: %.2f, Artistas: ",
-             cancion->id, cancion->track_name, cancion->album_name,
-             cancion->track_genre, cancion->tempo);
-      // Imprimir lista de artistas
-      char *art = (char *)list_first(cancion->artists);
-      while (art != NULL) {
-        printf("%s", art);
-        art = (char *)list_next(cancion->artists);
-        if (art != NULL) printf(", ");
-      }
-      printf("\n");
-      cancion = (Song *)list_next(canciones);
-    }
+    show_songs(songs);
   } else {
     printf("No se encontraron canciones del artista %s\n", artista);
   }
