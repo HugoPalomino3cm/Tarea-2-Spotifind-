@@ -356,7 +356,7 @@ void buscar_por_artista(Map *canciones_byartist) {
   }
   presioneTeclaParaContinuar();
 }
-
+//a
 crear_lista_reproduccion(playlists){
   limpiarPantalla();
 
