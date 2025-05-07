@@ -1,6 +1,7 @@
 #include "tdas/extra.h"
 #include "tdas/list.h"
 #include "tdas/map.h"
+#include "tdas/HashMap.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -55,7 +56,7 @@ int is_equal_int(void *key1, void *key2) {
 }
 
 /* YA MODIFIQUE EL ARCHIVO EN EL QUE SE TENIA QUE LEER */
-void cargar_canciones(Map *canciones_byid, Map *canciones_bygenres, Map *canciones_byartist, Map *canciones_by_tempo) {
+void cargar_canciones(HashMap *canciones_byid, HashMap *canciones_bygenres, HashMap *canciones_byartist, HashMap *canciones_by_tempo) {
   // Abrir el archivo CSV que contiene los datos de las canciones
   FILE *archivo = fopen("data/song_dataset_.csv", "r");
   if (archivo == NULL) {
@@ -87,7 +88,8 @@ void cargar_canciones(Map *canciones_byid, Map *canciones_bygenres, Map *cancion
       return;
     }
     // Imprimir mensaje de progreso con solo el número en azul
-    printf("Cargando canción %s%d%s...\n", AZUL, count + 1, RESETEAR);
+
+    //printf("Cargando canción %s%d%s...\n", AZUL, count + 1, RESETEAR);
 
     // Copia los campos con manejo seguro
     strncpy(cancion->id, campos[0] ? campos[0] : "", sizeof(cancion->id) - 1);
@@ -117,10 +119,10 @@ void cargar_canciones(Map *canciones_byid, Map *canciones_bygenres, Map *cancion
     cancion->track_genre[sizeof(cancion->track_genre) - 1] = '\0';
 
     // Insertar la canción en el mapa usando el ID como clave
-    map_insert(canciones_byid, cancion->id, cancion);
+    insertMap(canciones_byid, cancion->id, cancion);
     
     // Insertar en el mapa por género
-    MapPair *genre_pair = map_search(canciones_bygenres, cancion->track_genre); //BUSCA SI YA EXISTE EL GENERO
+    Pair *genre_pair = searchMap(canciones_bygenres, cancion->track_genre); //BUSCA SI YA EXISTE EL GENERO
     if (genre_pair == NULL) {
       List *new_list = list_create();
       if (new_list == NULL) { //MANEJO DE QUE NO SE HAYA PODIDO CREAR
@@ -132,7 +134,7 @@ void cargar_canciones(Map *canciones_byid, Map *canciones_bygenres, Map *cancion
         return;
       }
       list_pushBack(new_list, cancion);//AGREGAMOS LA CANCION AL FINAL DE LA LISTA
-      map_insert(canciones_bygenres, cancion->track_genre, new_list); //AGREGAMOS LA LISTA AL MAPA 
+      insertMap(canciones_bygenres, cancion->track_genre, new_list); //AGREGAMOS LA LISTA AL MAPA 
     } else {
       List *genre_list = (List *)genre_pair->value; //EN CASO DE NO EXISTIR CREAMOS LA LISTA DEL GENERO
       list_pushBack(genre_list, cancion); //AGREGAMOS LA CANCION A LA LISTA
@@ -141,7 +143,7 @@ void cargar_canciones(Map *canciones_byid, Map *canciones_bygenres, Map *cancion
     // Insertar en el mapa por artista
     char *artista = (char *)list_first(cancion->artists);
     while (artista != NULL) {
-      MapPair *artist_pair = map_search(canciones_byartist, artista);
+      Pair *artist_pair = searchMap(canciones_byartist, artista);
       if (artist_pair == NULL) {
         List *new_list = list_create();
         if (new_list == NULL) {
@@ -154,7 +156,7 @@ void cargar_canciones(Map *canciones_byid, Map *canciones_bygenres, Map *cancion
         }
         list_pushBack(new_list, cancion);
         char *artista_copy = strdup(artista); // Crear una copia para el mapa
-        map_insert(canciones_byartist, artista_copy, new_list);
+        insertMap(canciones_byartist, artista_copy, new_list);
       } else {
         List *artist_list = (List *)artist_pair->value;
         list_pushBack(artist_list, cancion);
@@ -176,7 +178,7 @@ void cargar_canciones(Map *canciones_byid, Map *canciones_bygenres, Map *cancion
       categoria = "Rápidas" ;
       rapidas++;
     }
-    MapPair *pair_tempo = map_search(canciones_by_tempo, categoria);
+    Pair *pair_tempo = searchMap(canciones_by_tempo, categoria);
     if(pair_tempo == NULL)
     {
       List *new_list = list_create() ;
@@ -189,7 +191,7 @@ void cargar_canciones(Map *canciones_byid, Map *canciones_bygenres, Map *cancion
         return;
       }
       list_pushBack(new_list, cancion) ;
-      map_insert(canciones_by_tempo, categoria, new_list);
+      insertMap(canciones_by_tempo, categoria, new_list);
     }
     else
     {
@@ -275,7 +277,7 @@ void show_songs(List *songs)
   presioneTeclaParaContinuar();
 }
 
-void buscar_por_tempo(Map *canciones_by_tempo) {
+void buscar_por_tempo(HashMap *canciones_by_tempo) {
   limpiarPantalla();
   int opcion;
   
@@ -305,7 +307,7 @@ void buscar_por_tempo(Map *canciones_by_tempo) {
       presioneTeclaParaContinuar();
       return;
   }
-  MapPair *searched = map_search(canciones_by_tempo, categoria);
+  Pair *searched = searchMap(canciones_by_tempo, categoria);
   if (searched != NULL) {
     List *canciones = (List *)searched->value;
     printf("\nCanciones con categoría de TEMPO %s\n", categoria);
@@ -317,7 +319,7 @@ void buscar_por_tempo(Map *canciones_by_tempo) {
   presioneTeclaParaContinuar();
 }
 
-void buscar_por_genero(Map *canciones_bygenres) {
+void buscar_por_genero(HashMap *canciones_bygenres) {
   limpiarPantalla();
   
   char genero[100];
@@ -326,9 +328,9 @@ void buscar_por_genero(Map *canciones_bygenres) {
   printf("Búsquedas recomendadas: “acoustic”, “samba”, “soul”, “anime” \n") ; 
   scanf("%s", genero); 
 
-  MapPair *searched_genre = map_search(canciones_bygenres, genero);
+  Pair *searched_genre = searchMap(canciones_bygenres, genero);
   if (searched_genre != NULL) {
-    List *canciones = searched_genre->value;
+    List *canciones = (List *)searched_genre->value;
     
     printf("\nCanciones del género %s:\n", genero);
     show_songs(canciones);
@@ -338,14 +340,14 @@ void buscar_por_genero(Map *canciones_bygenres) {
   }
 }
 
-void buscar_por_artista(Map *canciones_byartist) {
+void buscar_por_artista(HashMap *canciones_byartist) {
   limpiarPantalla();
   
   char artista[100];
   printf("Ingrese el nombre del artista: ");
   scanf(" %[^\n]", artista); // Lee el nombre completo, incluyendo espacios
 
-  MapPair *pair = map_search(canciones_byartist, artista);
+  Pair *pair = searchMap(canciones_byartist, artista);
   if (pair != NULL) {
     List *songs = (List *)pair->value;
     
@@ -356,7 +358,8 @@ void buscar_por_artista(Map *canciones_byartist) {
   }
   presioneTeclaParaContinuar();
 }
-//a
+
+/*
 crear_lista_reproduccion(playlists){
   limpiarPantalla();
 
@@ -384,24 +387,24 @@ crear_lista_reproduccion(playlists){
   }
 
   // Insertar la nueva playlist en el mapa
-  map_insert(playlists, nueva_playlist->name, nueva_playlist);
+  insertMap(playlists, nueva_playlist->name, nueva_playlist);
 
   printf("%sLista de reproducción '%s' creada exitosamente.%s\n", VERDE, nombre, RESETEAR);
   presioneTeclaParaContinuar();
 
 }
-
+*/
 
 int main() {
   char opcion; // Variable para almacenar una opción ingresada por el usuario
                // (sin uso en este fragmento)
 
-  Map *canciones_byid = map_create(is_equal_str);
-  Map *canciones_bygenres = map_create(is_equal_str);
+  HashMap *canciones_byid = createMap(20000000);
+  HashMap *canciones_bygenres = createMap(20000000);
 
-  Map *canciones_byartist = map_create(is_equal_str);
-  Map *canciones_by_tempo = map_create(is_equal_str);
-  Map *playlists = map_create(is_equal_str);
+  HashMap *canciones_byartist = createMap(20000000);
+  HashMap *canciones_by_tempo = createMap(3);
+  //HashMap *playlists = createMap(40000);
 
   // Recuerda usar un mapa por criterio de búsqueda
   do {
@@ -424,7 +427,7 @@ int main() {
       buscar_por_tempo(canciones_by_tempo);
       break;
     case '5':
-      crear_lista_reproduccion(playlists);
+      //crear_lista_reproduccion(playlists);
       break;
     case '6':
       //agregar_cancion_lista(canciones_byid, playlists);
