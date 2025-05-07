@@ -326,27 +326,14 @@ void buscar_por_genero(Map *canciones_bygenres) {
   printf("Búsquedas recomendadas: “acoustic”, “samba”, “soul”, “anime” \n") ; 
   scanf("%s", genero); 
 
-  MapPair *pair = map_search(canciones_bygenres, genero);
-  if (pair != NULL) {
-    List *canciones = pair->value;
-    Song *cancion = list_first(canciones);
+  MapPair *searched_genre = map_search(canciones_bygenres, genero);
+  if (searched_genre != NULL) {
+    List *canciones = searched_genre->value;
     
     printf("\nCanciones del género %s:\n", genero);
-    while (cancion != NULL) {
-      printf("ID: %s, Título: %s, Álbum: %s, Género: %s, Tempo: %.2f, Artistas: ",
-             cancion->id, cancion->track_name, cancion->album_name,
-             cancion->track_genre, cancion->tempo);
-      // Imprimir lista de artistas
-      char *artista = (char *)list_first(cancion->artists);
-      while (artista != NULL) {
-        printf("%s", artista);
-        artista = (char *)list_next(cancion->artists);
-        if (artista != NULL) printf(", ");
-      }
-      printf("\n");
-      cancion = list_next(canciones);
-    }
-  } else {
+    show_songs(canciones);
+  }
+  else {
     printf("No se encontraron canciones del género %s\n", genero);
   }
 }
@@ -360,32 +347,49 @@ void buscar_por_artista(Map *canciones_byartist) {
 
   MapPair *pair = map_search(canciones_byartist, artista);
   if (pair != NULL) {
-    List *canciones = (List *)pair->value;
-    Song *cancion = (Song *)list_first(canciones);
+    List *songs = (List *)pair->value;
     
     printf("\nCanciones del artista %s:\n", artista);
-    while (cancion != NULL) {
-      printf("ID: %s, Título: %s, Álbum: %s, Género: %s, Tempo: %.2f, Artistas: ",
-             cancion->id, cancion->track_name, cancion->album_name,
-             cancion->track_genre, cancion->tempo);
-      // Imprimir lista de artistas
-      char *art = (char *)list_first(cancion->artists);
-      while (art != NULL) {
-        printf("%s", art);
-        art = (char *)list_next(cancion->artists);
-        if (art != NULL) printf(", ");
-      }
-      printf("\n");
-      cancion = (Song *)list_next(canciones);
-    }
+    show_songs(songs);
   } else {
     printf("No se encontraron canciones del artista %s\n", artista);
   }
   presioneTeclaParaContinuar();
 }
 
+crear_lista_reproduccion(playlists){
+  limpiarPantalla();
 
+  char nombre[100];
 
+  printf("Ingrese el nombre de la nueva lista");
+  scanf("%[^\n]", nombre);
+
+  Playlist *nueva_playlist = (Playlist *)malloc(sizeof(Playlist));
+  if (nueva_playlist == NULL) {
+      printf("%sError: No se pudo asignar memoria para la nueva lista de reproducción.%s\n", ROJO, RESETEAR);
+      presioneTeclaParaContinuar();
+      return;
+  }
+
+  // Inicializar los campos de la nueva playlist
+  strncpy(nueva_playlist->name, nombre, sizeof(nueva_playlist->name) - 1);
+  nueva_playlist->name[sizeof(nueva_playlist->name) - 1] = '\0';
+  nueva_playlist->songs = list_create();
+  if (nueva_playlist->songs == NULL) {
+      printf("%sError: No se pudo crear la lista de canciones para la playlist.%s\n", ROJO, RESETEAR);
+      free(nueva_playlist);
+      presioneTeclaParaContinuar();
+      return;
+  }
+
+  // Insertar la nueva playlist en el mapa
+  map_insert(playlists, nueva_playlist->name, nueva_playlist);
+
+  printf("%sLista de reproducción '%s' creada exitosamente.%s\n", VERDE, nombre, RESETEAR);
+  presioneTeclaParaContinuar();
+
+}
 
 
 int main() {
@@ -397,6 +401,8 @@ int main() {
 
   Map *canciones_byartist = map_create(is_equal_str);
   Map *canciones_by_tempo = map_create(is_equal_str);
+  Map *playlists = map_create(is_equal_str);
+
   // Recuerda usar un mapa por criterio de búsqueda
   do {
     mostrarMenuPrincipal();
@@ -418,7 +424,7 @@ int main() {
       buscar_por_tempo(canciones_by_tempo);
       break;
     case '5':
-      //crear_lista_reproduccion(playlists);
+      crear_lista_reproduccion(playlists);
       break;
     case '6':
       //agregar_cancion_lista(canciones_byid, playlists);
