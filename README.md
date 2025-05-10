@@ -44,4 +44,22 @@ Spotifind es un sistema de gestión de canciones que permite buscar y organizar 
           ./tarea2
 
 
-## Uso del Programa
+### Ejemplo de Uso
+
+Un ejemplo de cómo interactuar con el sistema de gestión musical Spotifind:
+
+---
+
+#### **1) Cargar Canciones**  
+**Descripción:** Carga el dataset de canciones desde el archivo CSV.  
+**Nota:** `Solo necesitas cargar las canciones una vez al iniciar el programa.`  
+- **Seleccione opción:** 1  
+- **Resultado:**
+
+---
+
+#### **2) Buscar por Género**  
+**Descripción:** Busca canciones por género musical.  
+- **Seleccione opción:** 2  
+- **Ingrese género:** pop  
+- **Resultado:**  
