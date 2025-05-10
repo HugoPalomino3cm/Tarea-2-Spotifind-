@@ -54,12 +54,52 @@ Un ejemplo de cómo interactuar con el sistema de gestión musical Spotifind:
 **Descripción:** Carga el dataset de canciones desde el archivo CSV.  
 **Nota:** `Solo necesitas cargar las canciones una vez al iniciar el programa.`  
 - **Seleccione opción:** 1  
-- **Resultado:**
 
 ---
 
 #### **2) Buscar por Género**  
 **Descripción:** Busca canciones por género musical.  
 - **Seleccione opción:** 2  
-- **Ingrese género:** pop  
-- **Resultado:**  
+- **Ingrese género:** pop
+
+---
+
+#### **3) Buscar por Artista**  
+**Descripción:** Busca todas las canciones de un artista específico.  
+- **Seleccione opción:** 3  
+- **Ingrese artista:** Queen
+
+---
+
+#### **4) Buscar por Tempo**  
+**Descripción:** Busca canciones por rango de tempo (BPM).  
+- **Seleccione opción:** 4  
+- **Seleccione categoría:** 2 (Moderadas: 80-120 BPM)
+
+---
+
+#### **5) Crear Lista de Reproducción**  
+**Descripción:** Crea una nueva lista de reproducción vacía.  
+- **Seleccione opción:** 5  
+- **Ingrese nombre lista:** Mis Favoritas 2024
+
+---
+
+#### **6) Agregar Canción a Lista**  
+**Descripción:** Añade una canción a una lista existente usando su ID.  
+- **Seleccione opción:** 6  
+- **Seleccione lista:** 1 (Mis Favoritas 2024)  
+- **Ingrese ID canción:** 5
+
+---
+
+#### **7) Mostrar Canciones de Lista**  
+**Descripción:** Muestra todas las canciones en una lista de reproducción.  
+- **Seleccione opción:** 7  
+- **Seleccione lista:** 1 (Mis Favoritas 2024)
+
+---
+
+#### **8) Salir**  
+**Descripción:** Finaliza el programa.  
+- **Seleccione opción:** 8  
