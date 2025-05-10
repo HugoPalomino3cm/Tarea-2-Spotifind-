@@ -43,6 +43,8 @@ Spotifind es un sistema de gestión de canciones que permite buscar y organizar 
        ```bash
           ./tarea2
 
+### FALTA AGREGAR POSIBLES FALLAS PALTADEUS LO ESCRIBO POR SI ESQ ME OLVIDO :V
+
 
 ### Ejemplo de Uso
 
