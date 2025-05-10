@@ -3,8 +3,8 @@
 ![Logo de Spotify](https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg)
 
 ## Integrantes
-1. [Felipe Romero]
-2. [Hugo Palomino]
+1. Felipe Romero
+2. Hugo Palomino
 
 ## Pasos para Compilar y Ejecutar el Programa
 
@@ -15,8 +15,8 @@
 - Sistema operativo: Windows, Linux o macOS.
 - **Visual Studio Code** (recomendado).
 
-### Descripción General del Sistema
-Este sistema permite gestionar la atención de clientes en un servicio técnico, priorizando su atención según el nivel de urgencia del problema reportado.
+## Descripción del Proyecto
+Spotifind es un sistema de gestión de canciones que permite buscar y organizar música por diferentes criterios como género, artista y tempo. Además, permite crear listas de reproducción personalizadas.
 
 ### Instrucciones para Compilar
 
