@@ -115,7 +115,7 @@ Seleccione categoría: 2 (Moderadas: 80-120 BPM)
 
 ```text
 Seleccione opción: 5
-Ingrese nombre lista: Mis Favoritas 2024
+Ingrese nombre lista: Mis Favoritas 2018
 ```
 
 ---
@@ -126,7 +126,7 @@ Ingrese nombre lista: Mis Favoritas 2024
 
 ```text
 Seleccione opción: 6
-Seleccione lista: 1 (Mis Favoritas 2024)
+Seleccione lista: 1 (Mis Favoritas 2018)
 Ingrese ID canción: 5
 ```
 
@@ -138,7 +138,7 @@ Ingrese ID canción: 5
 
 ```text
 Seleccione opción: 7
-Seleccione lista: 1 (Mis Favoritas 2024)
+Seleccione lista: 1 (Mis Favoritas 2018)
 ```
 
 ---
