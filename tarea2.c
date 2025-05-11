@@ -542,48 +542,8 @@ void agregar_cancion_lista(HashMap *canciones_byid, HashMap *playlists) {
   presioneTeclaParaContinuar();
 }
 
-void mostrar_canciones_lista(HashMap *playlists) {
-  limpiarPantalla();
-
-  if (firstMap(playlists) == NULL) {
-    printf("%sError: No hay listas de reproducción creadas.%s\n", ROJO, RESET);
-    presioneTeclaParaContinuar();
-    return;
-  }
-
-  printf("\n%s══════════════════ Listas de Reproducción ══════════════════%s\n", AZUL, RESET);
-  Pair *current = firstMap(playlists);
-  int index = 1;
-  int total_listas = 0;
-  while (current != NULL) {
-    Playlist *playlist = (Playlist *)current->value;
-    printf("%s  %d) %s%s%s\n", AZUL, index, MAGENTA, playlist->name, RESET);
-    current = nextMap(playlists);
-    index++;
-    total_listas++;
-  }
-  printf("%s════════════════════════════════════════════════════════════%s\n", AZUL, RESET);
-
-  int opcion;
-  printf("%sSeleccione una lista ingresando el número (1-%d): %s", AZUL, total_listas, RESET);
-  scanf("%d", &opcion);
-  while (getchar() != '\n');
-
-  if (opcion < 1 || opcion > total_listas) {
-    printf("%sError: Opción inválida.%s\n", ROJO, RESET);
-    presioneTeclaParaContinuar();
-    return;
-  }
-
-  current = firstMap(playlists);
-  Playlist *playlist = NULL;
-  for (int i = 1; i <= opcion; i++) {
-    playlist = (Playlist *)current->value;
-    current = nextMap(playlists);
-  }
-
-  printf("\n%sCanciones en la lista '%s':%s\n", VERDE, playlist->name, RESET);
-  show_songs(playlist->songs, 1, 10);
+void mostrar_canciones_lista(HashMap *playlists){
+  return;
 }
 
 int main() {
@@ -621,6 +581,7 @@ int main() {
       agregar_cancion_lista(canciones_byid, playlists);
       break;
     case '7':
+      // falta hacerla uwu 
       mostrar_canciones_lista(playlists);
       break;
     case '8':
