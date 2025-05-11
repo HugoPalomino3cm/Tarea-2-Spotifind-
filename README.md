@@ -1,16 +1,8 @@
-# Spotifind 🎵
-
-![Logo de Spotify](https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg)
-
 ## 👥 Integrantes
 
-![Felipe Romero](https://www.primeraedicion.com.ar/wp-content/uploads/2025/04/tralalero-750x375.jpg)
-**Felipe Romero**
-
----
-
-![Hugo Palomino](https://images.cults3d.com/hIJZ4SvcmhPoPxg5JpDk2k-i9KM=/516x516/filters:no_upscale():format(webp)/https://fbi.cults3d.com/uploaders/41050705/illustration-file/ad5c379c-2807-49fb-ab36-e139e2cfec26/br-br-patapim.jpg)
-**Hugo Palomino**
+| ![Felipe Romero](https://www.primeraedicion.com.ar/wp-content/uploads/2025/04/tralalero-750x375.jpg) | ![Hugo Palomino](https://images.cults3d.com/hIJZ4SvcmhPoPxg5JpDk2k-i9KM=/516x516/filters:no_upscale():format(webp)/https://fbi.cults3d.com/uploaders/41050705/illustration-file/ad5c379c-2807-49fb-ab36-e139e2cfec26/br-br-patapim.jpg) |
+|:--:|:--:|
+| **Felipe Romero** | **Hugo Palomino** |
 
 
 ---
