@@ -593,6 +593,6 @@ int main() {
       presioneTeclaParaContinuar();
     }
   } while (opcion != '8');
-
+  // liberar memoria nos falta aca igual
   return 0;
 }
