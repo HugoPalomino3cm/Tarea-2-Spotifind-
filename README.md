@@ -2,9 +2,16 @@
 
 ![Logo de Spotify](https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg)
 
-## Integrantes
-1. Felipe Romero  
-2. Hugo Palomino
+## 👥 Integrantes
+
+![Felipe Romero](falta)
+**Felipe Romero**
+
+---
+
+![Hugo Palomino]([img/hugo.jpg](https://github.com/HugoPalomino3cm/Tarea-2-Spotifind-/blob/b4fc487b2f812e7d62d7843ac086905d7cbe7549/tralaleroPrueba.jpg))
+**Hugo Palomino**
+
 
 ---
 
