@@ -7,11 +7,13 @@
 #include <string.h>
 
 // Definición de colores ANSI para salida en consola
-#define ROJO "\033[0;31m"      // Rojo oscuro para mensajes de error o advertencia
-#define VERDE "\033[0;32m"     // Verde oscuro para mensajes de éxito
-#define AZUL "\033[0;34m"      // Azul oscuro para mensajes informativos
-#define BLANCO "\033[1;37m"    // Blanco para mensaje de salida
-#define RESETEAR "\033[0m"     // Resetea el color a predeterminado
+#define ROJO    "\x1b[31m"
+#define VERDE   "\x1b[32m"
+#define AMARILLO "\x1b[33m"
+#define AZUL    "\x1b[34m"
+#define MAGENTA "\x1b[35m"
+#define CYAN    "\x1b[36m"
+#define RESET   "\x1b[0m"
 
 typedef struct {
   char id[100];           // ID de la canción 
@@ -22,29 +24,27 @@ typedef struct {
   char track_genre[100];  // Género de la pista 
 } Song;
 
-// ESTRUCTURA CREADA PARA LA PLAYLIST PALTANEITOR (seccion de preguntas 5,6,7)
 typedef struct {
   char name[100];          // Nombre de la lista de reproduccion
   List *songs;            // Lista de canciones en la lista de reproduccion
 } Playlist;
 
-/* AVISO IMPORTANTE NO BORRE VARIOS COMENTARIOS PERO MODIFIQUE LA WEAS ASI QUE PUEDE QUE SIGAN HABIENDO COMENTARIOS DEL CODIGO PROPUESTO PORSIACASO */
-
-// Menú principal
 void mostrarMenuPrincipal() {
   limpiarPantalla();
   printf("%s╔════════════════════════════════════════╗\n", AZUL);
-  printf("║            🎵 Spotifind 🎵             ║\n");
-  printf("╚════════════════════════════════════════╝\n");
-  printf("  1) Cargar Canciones\n");
-  printf("  2) Buscar por género\n");
-  printf("  3) Buscar por artista\n");
-  printf("  4) Buscar por tempo\n");
-  printf("  5) Crear lista de reproducción\n");
-  printf("  6) Agregar canción a la lista\n");
-  printf("  7) Mostrar canciones de una lista\n");
-  printf("%s  8) Salir%s\n", ROJO, AZUL);
-  printf("══════════════════════════════════════════%s\n", RESETEAR);
+  printf("%s║            🎵 Spotifind 🎵             ║\n", AZUL);
+  printf("%s╚════════════════════════════════════════╝\n", AZUL);
+  
+  printf("%s  1) Cargar Canciones%s\n", VERDE, RESET);
+  printf("%s  2) Buscar por género%s\n", VERDE, RESET);
+  printf("%s  3) Buscar por artista%s\n", VERDE, RESET);
+  printf("%s  4) Buscar por tempo%s\n", VERDE, RESET);
+  printf("%s  5) Crear lista de reproducción%s\n", VERDE, RESET);
+  printf("%s  6) Agregar canción a la lista%s\n", VERDE, RESET);
+  printf("%s  7) Mostrar canciones de una lista%s\n", VERDE, RESET);
+  printf("%s  8) Salir%s\n", ROJO, RESET);
+  
+  printf("%s══════════════════════════════════════════%s\n", AZUL, RESET);
 }
 
 int is_equal_str(void *key1, void *key2) {
@@ -52,77 +52,67 @@ int is_equal_str(void *key1, void *key2) {
 }
 
 int is_equal_int(void *key1, void *key2) {
-  return *(int *)key1 == *(int *)key2; // Compara valores enteros directamente
+  return *(int *)key1 == *(int *)key2;
 }
 
 void mostrar_barra_progreso(int actual, int total) {
-  static int ultimo_porcentaje_mostrado = -1; // Para rastrear el último porcentaje mostrado
-  int ancho_barra = 30; // Ancho de la barra
+  static int ultimo_porcentaje_mostrado = -1;
+  int ancho_barra = 30;
   float porcentaje = (float)actual / total;
   int porcentaje_entero = (int)(porcentaje * 100);
 
-  // Forzar 100% si actual == total
   if (actual == total) {
     porcentaje_entero = 100;
   }
 
-  // Actualizar si el porcentaje ha cambiado o si hemos alcanzado el total
   if (porcentaje_entero != ultimo_porcentaje_mostrado || actual == total) {
     int completado = (int)((float)porcentaje_entero / 100 * ancho_barra);
 
-    // Asegurar que la barra esté completamente llena si es 100%
     if (porcentaje_entero == 100) {
       completado = ancho_barra;
     }
 
-    // Imprimir la barra con emojis
-    printf("\r[");
-    for (int i = 0; i < completado; i++) printf("🟩");  // Parte completada
-    for (int i = completado; i < ancho_barra; i++) printf("⬜");  // Parte no completada
-    printf("] %3d%% [%d/%d]", porcentaje_entero, actual, total);
-    fflush(stdout); // Forzar actualización
+   printf("\r%s[", CYAN);
+    for (int i = 0; i < completado; i++) printf("🟩");
+    for (int i = completado; i < ancho_barra; i++) printf("⬜");
+    printf("] %3d%% [%d/%d]%s", porcentaje_entero, actual, total, RESET);
+    fflush(stdout);
 
-    ultimo_porcentaje_mostrado = porcentaje_entero; // Actualizar el último porcentaje mostrado
+    ultimo_porcentaje_mostrado = porcentaje_entero;
   }
 }
 
-/* YA MODIFIQUE EL ARCHIVO EN EL QUE SE TENIA QUE LEER */
 void cargar_canciones(HashMap *canciones_byid, HashMap *canciones_bygenres, HashMap *canciones_byartist, HashMap *canciones_by_tempo) {
-  // Abrir el archivo CSV
   FILE *archivo = fopen("data/song_dataset_.csv", "r");
   if (archivo == NULL) {
-    printf("%sError: No se pudo abrir el archivo de datos.%s\n", ROJO, RESETEAR);
+    printf("%sError: No se pudo abrir el archivo de datos.%s\n", ROJO, RESET);
     presioneTeclaParaContinuar();
     return;
   }
 
-  // Contar las líneas válidas del archivo (excluyendo encabezado y líneas vacías)
   int total_lineas = 0;
   char buffer[1024];
-  int is_first_line = 1; // Para ignorar el encabezado
+  int is_first_line = 1;
   while (fgets(buffer, sizeof(buffer), archivo)) {
-    // Ignorar la primera línea (encabezado) y líneas vacías
     if (is_first_line) {
       is_first_line = 0;
       continue;
     }
-    // Ignorar líneas vacías o que solo contengan espacios o saltos de línea
     if (strlen(buffer) > 1 && buffer[0] != '\n' && strspn(buffer, " \t\n") != strlen(buffer)) {
       total_lineas++;
     }
   }
   if (total_lineas <= 0) {
-    printf("%sError: El archivo está vacío o solo contiene el encabezado.%s\n", ROJO, RESETEAR);
+    printf("%sError: El archivo está vacío o solo contiene el encabezado.%s\n", ROJO, RESET);
     fclose(archivo);
     presioneTeclaParaContinuar();
     return;
   }
-  rewind(archivo); // Volver al inicio del archivo
+  rewind(archivo);
 
-  // Leer el encabezado
   char **campos = leer_linea_csv(archivo, ',');
   if (campos == NULL) {
-    printf("%sError: No se pudo leer el encabezado del archivo.%s\n", ROJO, RESETEAR);
+    printf("%sError: No se pudo leer el encabezado del archivo.%s\n", ROJO, RESET);
     fclose(archivo);
     presioneTeclaParaContinuar();
     return;
@@ -131,34 +121,28 @@ void cargar_canciones(HashMap *canciones_byid, HashMap *canciones_bygenres, Hash
   int count = 0;
   int lentas = 0, moderadas = 0, rapidas = 0;
 
-  // Mostrar barra de progreso inicial
   mostrar_barra_progreso(count, total_lineas);
 
-  // Procesar las canciones
   while ((campos = leer_linea_csv(archivo, ',')) != NULL) {
-    // Ignorar líneas vacías o mal formateadas
     if (!campos[0] || strlen(campos[0]) == 0) {
-      continue; // Saltar esta línea
+      continue;
     }
 
-    // Asignar memoria para una nueva estructura Song
     Song *cancion = (Song *)malloc(sizeof(Song));
     if (cancion == NULL) {
-      printf("\n%sError: No se pudo asignar memoria para la canción %d.%s\n", ROJO, count + 1, RESETEAR);
+      printf("\n%sError: No se pudo asignar memoria para la canción %d.%s\n", ROJO, count + 1, RESET);
       fclose(archivo);
       presioneTeclaParaContinuar();
       return;
     }
 
-    // Copia los campos con manejo seguro
     strncpy(cancion->id, campos[0] ? campos[0] : "", sizeof(cancion->id) - 1);
     cancion->id[sizeof(cancion->id) - 1] = '\0';
 
-    // Manejo de artistas
     if (campos[2] == NULL || strlen(campos[2]) == 0) {
       cancion->artists = list_create();
     } else {
-      cancion->artists = split_string(campos[2], ";");    // Asignamos nombre del o los artistas
+      cancion->artists = split_string(campos[2], ";");
       if (cancion->artists == NULL || list_first(cancion->artists) == NULL) {
         cancion->artists = list_create();
         char *artista_copy = strdup(campos[2]);
@@ -177,15 +161,13 @@ void cargar_canciones(HashMap *canciones_byid, HashMap *canciones_bygenres, Hash
     strncpy(cancion->track_genre, campos[20] ? campos[20] : "", sizeof(cancion->track_genre) - 1);
     cancion->track_genre[sizeof(cancion->track_genre) - 1] = '\0';
 
-    // Insertar la canción en el mapa usando el ID como clave
     insertMap(canciones_byid, cancion->id, cancion);
     
-    // Insertar en el mapa por género
     Pair *genre_pair = searchMap(canciones_bygenres, cancion->track_genre);
     if (genre_pair == NULL) {
       List *new_list = list_create();
       if (new_list == NULL) {
-        printf("\n%sError: No se pudo crear una lista para el género %s.%s\n", ROJO, cancion->track_genre, RESETEAR);
+        printf("\n%sError: No se pudo crear una lista para el género %s.%s\n", ROJO, cancion->track_genre, RESET);
         free(cancion);
         fclose(archivo);
         presioneTeclaParaContinuar();
@@ -198,14 +180,13 @@ void cargar_canciones(HashMap *canciones_byid, HashMap *canciones_bygenres, Hash
       list_pushBack(genre_list, cancion);
     }
 
-    // Insertar en el mapa por artista
     char *artista = (char *)list_first(cancion->artists);
     while (artista != NULL) {
       Pair *artist_pair = searchMap(canciones_byartist, artista);
       if (artist_pair == NULL) {
         List *new_list = list_create();
         if (new_list == NULL) {
-          printf("\n%sError: No se pudo crear una lista para el artista %s.%s\n", ROJO, artista, RESETEAR);
+          printf("\n%sError: No se pudo crear una lista para el artista %s.%s\n", ROJO, artista, RESET);
           free(cancion);
           fclose(archivo);
           presioneTeclaParaContinuar();
@@ -236,7 +217,7 @@ void cargar_canciones(HashMap *canciones_byid, HashMap *canciones_bygenres, Hash
     if (pair_tempo == NULL) {
       List *new_list = list_create();
       if (new_list == NULL) {
-        printf("\n%sERROR: NO SE PUDO CREAR UNA LISTA PARA LA CATEGORÍA %s%s\n", ROJO, categoria, RESETEAR);
+        printf("\n%sERROR: NO SE PUDO CREAR UNA LISTA PARA LA CATEGORÍA %s%s\n", ROJO, categoria, RESET);
         free(cancion);
         fclose(archivo);
         presioneTeclaParaContinuar();
@@ -249,90 +230,113 @@ void cargar_canciones(HashMap *canciones_byid, HashMap *canciones_bygenres, Hash
     }
 
     count++;
-    // Actualizar la barra de progreso
     mostrar_barra_progreso(count, total_lineas);
   }
 
   fclose(archivo);
 
-  // Forzar la barra de progreso al 100% con el número real de canciones procesadas
   mostrar_barra_progreso(count, count);
 
-  // Mostrar mensaje de éxito
   printf("\n");
-  printf("%sÉxito: Se cargaron %d canciones correctamente.%s\n", VERDE, count, RESETEAR);
-  printf("Canciones por tempo: Lentas=%d, Moderadas=%d, Rápidas=%d\n", lentas, moderadas, rapidas);
+  printf("%sÉxito: Se cargaron %d canciones correctamente.%s\n", VERDE, count, RESET);
+  printf("%sCanciones por tempo: Lentas=%d, Moderadas=%d, Rápidas=%d%s\n", CYAN, lentas, moderadas, rapidas, RESET);
   presioneTeclaParaContinuar();
 }
 
 void show_artists(List *list_artists) {
   if (list_artists == NULL) {
-    printf("Artistas: Desconocido\n");
+    printf("%sArtistas: %sDesconocido%s\n", CYAN, AMARILLO, RESET);
     return;
   }
 
-  printf("Artistas: ");
+  printf("%sArtistas: ", CYAN);
   char *artist = (char *)list_first(list_artists);
   if (artist == NULL) {
-    printf("Desconocido\n");
+    printf("%sDesconocido%s\n", AMARILLO, RESET);
     return;
   }
   while (artist != NULL) {
-    printf("%s", artist);
+    printf("%s%s", VERDE, artist);
     artist = (char *)list_next(list_artists);
     if (artist != NULL) {
-      printf(", ");
+      printf("%s, ", RESET);
     }
   }
-  printf("\n");
+  printf("%s\n", RESET);
 }
 
-void show_songs(List *songs) {
+void show_songs(List *songs, int page, int songs_per_page) {
   limpiarPantalla();
   if (songs == NULL) {
-    printf("%sNo se encontraron canciones.%s\n", ROJO, RESETEAR);
+    printf("%sNo se encontraron canciones.%s\n", ROJO, RESET);
     presioneTeclaParaContinuar();
     return;
   }
 
-  printf("\nLista de canciones\n");
+  printf("\n%s══════════════════ Lista de Canciones ══════════════════%s\n", AZUL, RESET);
   Song *cancion = (Song *)list_first(songs);
   int song_number = 1;
+  int current_song = 1;
+  int start_song = (page - 1) * songs_per_page + 1;
+  int end_song = page * songs_per_page;
 
   if (cancion == NULL) {
-    printf("%sNo se encontraron canciones.%s\n", ROJO, RESETEAR);
+    printf("%sNo se encontraron canciones.%s\n", ROJO, RESET);
     presioneTeclaParaContinuar();
     return;
   }
-  while (cancion != NULL) {
-    printf("Canción %d\n", song_number);
-    printf("  Título: %s\n", cancion->track_name[0] ? cancion->track_name : "Desconocido"); // AGREGAR CONDICIONES PARA PONER DESCONOCIDO EN CASO DE Q NO EXISTA
-    printf("  Álbum: %s\n", cancion->album_name[0] ? cancion->album_name : "Desconocido");
-    printf("  Género: %s\n", cancion->track_genre[0] ? cancion->track_genre : "Desconocido");
-    printf("  Tempo: %.2f BPM\n", cancion->tempo);
-    show_artists(cancion->artists);
-    printf("-------------------------------------\n");
+
+  while (cancion != NULL && current_song < start_song) {
     cancion = (Song *)list_next(songs);
+    current_song++;
     song_number++;
   }
-  presioneTeclaParaContinuar();
+
+  while (cancion != NULL && current_song <= end_song) {
+    printf("%sCanción %d%s\n", MAGENTA, song_number, RESET);
+    printf("%s  Título: %s%s%s\n", CYAN, VERDE, cancion->track_name[0] ? cancion->track_name : "Desconocido", RESET);
+    printf("%s  Álbum: %s%s%s\n", CYAN, VERDE, cancion->album_name[0] ? cancion->album_name : "Desconocido", RESET);
+    printf("%s  Género: %s%s%s\n", CYAN, VERDE, cancion->track_genre[0] ? cancion->track_genre : "Desconocido", RESET);
+    printf("%s  Tempo: %s%.2f BPM%s\n", CYAN, VERDE, cancion->tempo, RESET);
+    show_artists(cancion->artists);
+    printf("%s-----------------------------------------------------%s\n", AMARILLO, RESET);
+    cancion = (Song *)list_next(songs);
+    current_song++;
+    song_number++;
+  }
+
+  int total_songs = 0;
+  void *current = list_first(songs);
+  while (current != NULL) {
+    total_songs++;
+    current = list_next(songs);
+  }
+  int total_pages = (total_songs + songs_per_page - 1) / songs_per_page;
+
+  printf("%sPágina %d de %d%s\n", AZUL, page, total_pages, RESET);
+  printf("%sOpciones:%s\n", AZUL, RESET);
+  if (page > 1) {
+    printf("%s  1) Página anterior%s\n", AZUL, RESET);
+  }
+  if (page < total_pages) {
+    printf("%s  2) Página siguiente%s\n", AZUL, RESET);
+  }
+  printf("%s  3) Volver%s\n", ROJO, RESET);
 }
 
 void buscar_por_tempo(HashMap *canciones_by_tempo) {
   limpiarPantalla();
   int opcion;
   
-  /** Solicita al usuario la categoría de tempo */
-  printf("Seleccione la categoría de tempo:\n");
-  printf("1) Lentas (menos de 80 BPM)\n");
-  printf("2) Moderadas (80-120 BPM)\n");
-  printf("3) Rápidas (mayor a 120 BPM)\n");
-  printf("Ingrese su opción (1-3): ");
+  printf("%sSeleccione la categoría de tempo:%s\n", AZUL, RESET);
+  printf("%s1) Lentas (menos de 80 BPM)%s\n", AZUL, RESET);
+  printf("%s2) Moderadas (80-120 BPM)%s\n", AZUL, RESET);
+  printf("%s3) Rápidas (mayor a 120 BPM)%s\n", AZUL, RESET);
+  printf("%sIngrese su opción (1-3): %s", AZUL, RESET);
   scanf("%d", &opcion);
   while (getchar() != '\n');
 
   char *categoria;
-  // Define los rangos de tempo según la opción 
   switch (opcion) {
     case 1:
       categoria = "Lentas";
@@ -344,37 +348,66 @@ void buscar_por_tempo(HashMap *canciones_by_tempo) {
       categoria = "Rápidas";
       break;
     default:
-      printf("%sOpción inválida.%s\n", ROJO, RESETEAR);
+      printf("%sOpción inválida.%s\n", ROJO, RESET);
       presioneTeclaParaContinuar();
       return;
   }
+
   Pair *searched = searchMap(canciones_by_tempo, categoria);
-  if (searched != NULL) {
-    List *canciones = (List *)searched->value;
-    printf("\nCanciones con categoría de TEMPO %s\n", categoria);
-    show_songs(canciones);
-  } else {
-    printf("%sNo se encontraron canciones en la categoría %s.%s\n", ROJO, categoria, RESETEAR);
+  if (searched == NULL) {
+    printf("%sNo se encontraron canciones en la categoría '%s'.%s\n", ROJO, categoria, RESET);
     presioneTeclaParaContinuar();
+    return;
   }
+
+  List *canciones = (List *)searched->value;
+  int songs_per_page = 100; // Cambiado de 10 a 100
+  int current_page = 1;
+  char nav_option;
+
+  do {
+    printf("\n%sCanciones con categoría de tempo '%s':%s\n", VERDE, categoria, RESET);
+    show_songs(canciones, current_page, songs_per_page);
+
+    printf("%sIngrese su opción: %s", AZUL, RESET);
+    scanf(" %c", &nav_option);
+    while (getchar() != '\n');
+
+    int total_songs = 0;
+    void *current = list_first(canciones);
+    while (current != NULL) {
+      total_songs++;
+      current = list_next(canciones);
+    }
+    int total_pages = (total_songs + songs_per_page - 1) / songs_per_page;
+
+    if (nav_option == '1' && current_page > 1) {
+      current_page--;
+    } else if (nav_option == '2' && current_page < total_pages) {
+      current_page++;
+    } else if (nav_option != '3') {
+      printf("%sOpción inválida.%s\n", ROJO, RESET);
+      presioneTeclaParaContinuar();
+    }
+  } while (nav_option != '3');
 }
 
 void buscar_por_genero(HashMap *canciones_bygenres) {
   limpiarPantalla();
   
   char genero[100];
-  printf("Ingrese el género de la canción: ");
-  printf("Búsquedas recomendadas: “acoustic”, “samba”, “soul”, “anime” \n");
+  printf("%sIngrese el género de la canción: %s", AZUL, RESET);
+  printf("%sBúsquedas recomendadas: “acoustic”, “samba”, “soul”, “anime”%s\n", AZUL, RESET);
   scanf("%s", genero);
   while (getchar() != '\n');
 
   Pair *searched_genre = searchMap(canciones_bygenres, genero);
   if (searched_genre != NULL) {
     List *canciones = (List *)searched_genre->value;
-    printf("\nCanciones del género %s:\n", genero);
-    show_songs(canciones);
+    printf("\n%sCanciones del género '%s':%s\n", VERDE, genero, RESET);
+    show_songs(canciones, 1, 10);
   } else {
-    printf("%sNo se encontraron canciones del género %s.%s\n", ROJO, genero, RESETEAR);
+    printf("%sNo se encontraron canciones del género '%s'.%s\n", ROJO, genero, RESET);
     presioneTeclaParaContinuar();
   }
 }
@@ -383,17 +416,17 @@ void buscar_por_artista(HashMap *canciones_byartist) {
   limpiarPantalla();
   
   char artista[100];
-  printf("Ingrese el nombre del artista: ");
-  scanf(" %[^\n]", artista); // Lee el nombre completo, incluyendo espacios
+  printf("%sIngrese el nombre del artista: %s", AZUL, RESET);
+  scanf(" %[^\n]", artista);
   while (getchar() != '\n');
 
   Pair *pair = searchMap(canciones_byartist, artista);
   if (pair != NULL) {
     List *songs = (List *)pair->value;
-    printf("\nCanciones del artista %s:\n", artista);
-    show_songs(songs);
+    printf("\n%sCanciones del artista '%s':%s\n", VERDE, artista, RESET);
+    show_songs(songs, 1, 10);
   } else {
-    printf("%sNo se encontraron canciones del artista %s.%s\n", ROJO, artista, RESETEAR);
+    printf("%sNo se encontraron canciones del artista '%s'.%s\n", ROJO, artista, RESET);
     presioneTeclaParaContinuar();
   }
 }
@@ -402,19 +435,25 @@ void crear_lista_reproduccion(HashMap *playlists) {
   limpiarPantalla();
 
   char nombre[100];
-  printf("Ingrese el nombre de la nueva lista: ");
+  printf("%sIngrese el nombre de la nueva lista: %s", AZUL, RESET);
   scanf(" %[^\n]", nombre);
   while (getchar() != '\n');
 
   if (strlen(nombre) == 0) {
-    printf("%sError: El nombre de la lista no puede estar vacío.%s\n", ROJO, RESETEAR);
+    printf("%sError: El nombre de la lista no puede estar vacío.%s\n", ROJO, RESET);
+    presioneTeclaParaContinuar();
+    return;
+  }
+
+  if (searchMap(playlists, nombre) != NULL) {
+    printf("%sError: Ya existe una lista de reproducción con el nombre '%s'.%s\n", ROJO, nombre, RESET);
     presioneTeclaParaContinuar();
     return;
   }
 
   Playlist *nueva_playlist = (Playlist *)malloc(sizeof(Playlist));
   if (nueva_playlist == NULL) {
-    printf("%sError: No se pudo asignar memoria para la nueva lista de reproducción.%s\n", ROJO, RESETEAR);
+    printf("%sError: No se pudo asignar memoria para la nueva lista de reproducción.%s\n", ROJO, RESET);
     presioneTeclaParaContinuar();
     return;
   }
@@ -423,14 +462,14 @@ void crear_lista_reproduccion(HashMap *playlists) {
   nueva_playlist->name[sizeof(nueva_playlist->name) - 1] = '\0';
   nueva_playlist->songs = list_create();
   if (nueva_playlist->songs == NULL) {
-    printf("%sError: No se pudo crear la lista de canciones para la playlist.%s\n", ROJO, RESETEAR);
+    printf("%sError: No se pudo crear la lista de canciones para la playlist.%s\n", ROJO, RESET);
     free(nueva_playlist);
     presioneTeclaParaContinuar();
     return;
   }
 
   insertMap(playlists, nueva_playlist->name, nueva_playlist);
-  printf("%sLista de reproducción '%s' creada exitosamente.%s\n", VERDE, nombre, RESETEAR);
+  printf("%sLista de reproducción '%s' creada exitosamente.%s\n", VERDE, nombre, RESET);
   presioneTeclaParaContinuar();
 }
 
@@ -438,30 +477,31 @@ void agregar_cancion_lista(HashMap *canciones_byid, HashMap *playlists) {
   limpiarPantalla();
 
   if (firstMap(playlists) == NULL) {
-    printf("%sError: No hay listas de reproducción creadas.%s\n", ROJO, RESETEAR);
+    printf("%sError: No hay listas de reproducción creadas.%s\n", ROJO, RESET);
     presioneTeclaParaContinuar();
     return;
   }
 
-  printf("%sListas de reproducción disponibles:%s\n", AZUL, RESETEAR);
+  printf("\n%s══════════════════ Listas de Reproducción ══════════════════%s\n", AZUL, RESET);
   Pair *current = firstMap(playlists);
   int index = 1;
   int total_listas = 0;
   while (current != NULL) {
     Playlist *playlist = (Playlist *)current->value;
-    printf("  %d) %s\n", index, playlist->name);
+    printf("%s  %d) %s%s%s\n", AZUL, index, MAGENTA, playlist->name, RESET);
     current = nextMap(playlists);
     index++;
     total_listas++;
   }
+  printf("%s════════════════════════════════════════════════════════════%s\n", AZUL, RESET);
 
   int opcion;
-  printf("Seleccione una lista ingresando el número (1-%d): ", total_listas);
+  printf("%sSeleccione una lista ingresando el número (1-%d): %s", AZUL, total_listas, RESET);
   scanf("%d", &opcion);
   while (getchar() != '\n');
 
   if (opcion < 1 || opcion > total_listas) {
-    printf("%sError: Opción inválida.%s\n", ROJO, RESETEAR);
+    printf("%sError: Opción inválida.%s\n", ROJO, RESET);
     presioneTeclaParaContinuar();
     return;
   }
@@ -474,13 +514,13 @@ void agregar_cancion_lista(HashMap *canciones_byid, HashMap *playlists) {
   }
 
   char id_cancion[100];
-  printf("Ingrese el ID de la canción: ");
+  printf("%sIngrese el ID de la canción: %s", AZUL, RESET);
   scanf("%[^\n]", id_cancion);
   while (getchar() != '\n');
 
   Pair *song_pair = searchMap(canciones_byid, id_cancion);
   if (song_pair == NULL) {
-    printf("%sError: La canción con ID '%s' no existe.%s\n", ROJO, id_cancion, RESETEAR);
+    printf("%sError: La canción con ID '%s' no existe.%s\n", ROJO, id_cancion, RESET);
     presioneTeclaParaContinuar();
     return;
   }
@@ -490,7 +530,7 @@ void agregar_cancion_lista(HashMap *canciones_byid, HashMap *playlists) {
   Song *current_song = (Song *)list_first(playlist->songs);
   while (current_song != NULL) {
     if (strcmp(current_song->id, cancion->id) == 0) {
-      printf("%sAdvertencia: La canción '%s' ya está en la lista '%s'.%s\n", ROJO, cancion->track_name, playlist->name, RESETEAR);
+      printf("%sAdvertencia: La canción '%s' ya está en la lista '%s'.%s\n", AMARILLO, cancion->track_name, playlist->name, RESET);
       presioneTeclaParaContinuar();
       return;
     }
@@ -498,7 +538,7 @@ void agregar_cancion_lista(HashMap *canciones_byid, HashMap *playlists) {
   }
 
   list_pushBack(playlist->songs, cancion);
-  printf("%sCanción '%s' agregada exitosamente a la lista '%s'.%s\n", VERDE, cancion->track_name, playlist->name, RESETEAR);
+  printf("%sCanción '%s' agregada exitosamente a la lista '%s'.%s\n", VERDE, cancion->track_name, playlist->name, RESET);
   presioneTeclaParaContinuar();
 }
 
@@ -506,30 +546,31 @@ void mostrar_canciones_lista(HashMap *playlists) {
   limpiarPantalla();
 
   if (firstMap(playlists) == NULL) {
-    printf("%sError: No hay listas de reproducción creadas.%s\n", ROJO, RESETEAR);
+    printf("%sError: No hay listas de reproducción creadas.%s\n", ROJO, RESET);
     presioneTeclaParaContinuar();
     return;
   }
 
-  printf("%sListas de reproducción disponibles:%s\n", AZUL, RESETEAR);
+  printf("\n%s══════════════════ Listas de Reproducción ══════════════════%s\n", AZUL, RESET);
   Pair *current = firstMap(playlists);
   int index = 1;
   int total_listas = 0;
   while (current != NULL) {
     Playlist *playlist = (Playlist *)current->value;
-    printf("  %d) %s\n", index, playlist->name);
+    printf("%s  %d) %s%s%s\n", AZUL, index, MAGENTA, playlist->name, RESET);
     current = nextMap(playlists);
     index++;
     total_listas++;
   }
+  printf("%s════════════════════════════════════════════════════════════%s\n", AZUL, RESET);
 
   int opcion;
-  printf("Seleccione una lista ingresando el número (1-%d): ", total_listas);
+  printf("%sSeleccione una lista ingresando el número (1-%d): %s", AZUL, total_listas, RESET);
   scanf("%d", &opcion);
   while (getchar() != '\n');
 
   if (opcion < 1 || opcion > total_listas) {
-    printf("%sError: Opción inválida.%s\n", ROJO, RESETEAR);
+    printf("%sError: Opción inválida.%s\n", ROJO, RESET);
     presioneTeclaParaContinuar();
     return;
   }
@@ -541,16 +582,12 @@ void mostrar_canciones_lista(HashMap *playlists) {
     current = nextMap(playlists);
   }
 
-  printf("\nCanciones en la lista '%s':\n", playlist->name);
-  show_songs(playlist->songs);
+  printf("\n%sCanciones en la lista '%s':%s\n", VERDE, playlist->name, RESET);
+  show_songs(playlist->songs, 1, 10);
 }
 
-// FALTA LIBERAR MEMORIA A LOS MAPAS SUPER IMPORTANTE NO OLVIDAR AHORA TENGO QUE HACER OTRA COSA MGFDKJKFJDSMFS
-
-
 int main() {
-  char opcion; // Variable para almacenar una opción ingresada por el usuario
-               // (sin uso en este fragmento)
+  char opcion;
 
   HashMap *canciones_byid = createMap(20000000);
   HashMap *canciones_bygenres = createMap(20000000);
@@ -558,10 +595,9 @@ int main() {
   HashMap *canciones_by_tempo = createMap(3);
   HashMap *playlists = createMap(40000);
 
-  // Recuerda usar un mapa por criterio de búsqueda
   do {
     mostrarMenuPrincipal();
-    printf("Ingrese su opción: ");
+    printf("%sIngrese su opción: %s", AZUL, RESET);
     scanf(" %c", &opcion);
     while (getchar() != '\n');
 
@@ -573,7 +609,6 @@ int main() {
       buscar_por_genero(canciones_bygenres);
       break;
     case '3':
-      // podemos agregar de que si colocan un nombre que esta incompleto y hay varios nombres similares podemos darle opciones al usuario
       buscar_por_artista(canciones_byartist);
       break;
     case '4':
@@ -589,11 +624,11 @@ int main() {
       mostrar_canciones_lista(playlists);
       break;
     case '8':
-      printf("%sSaliendo de la aplicación...%s\n", BLANCO, RESETEAR);
+      printf("%sSaliendo del programa...%s\n", VERDE, RESET);
       presioneTeclaParaContinuar();
       break;
     default:
-      printf("%sOpción inválida.%s\n", ROJO, RESETEAR);
+      printf("%sOpción inválida.%s\n", ROJO, RESET);
       presioneTeclaParaContinuar();
     }
   } while (opcion != '8');
