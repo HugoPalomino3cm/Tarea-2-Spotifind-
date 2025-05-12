@@ -186,6 +186,8 @@ Seleccione opción: 8
 
 ## ⚠️ Posibles Errores Comunes (TODO)
 
+# Posible Falla: Colores ANSI en Windows
+Si el programa se ejecuta en un sistema Windows sin una terminal compatible con códigos ANSI (como `cmd.exe` sin configuración especial), los colores no se mostrarán correctamente y podrían verse como texto extraño (por ejemplo: `\033[1;32m`).
 ñau amargaita
 
 
