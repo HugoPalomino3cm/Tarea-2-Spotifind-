@@ -122,7 +122,13 @@ Seleccione categoría: 2 (Moderadas: 80-120 BPM)
 
 ```text
 Seleccione opción: 5
-Ingrese nombre lista: Mis Favoritas 2018
+Ingrese el nombre de la nueva lista: Mis Favoritas 2019
+
+══════════════════ Listas de Reproducción Disponibles ══════════════════
+  1) Mis Favoritas 2019
+════════════════════════════════════════════════════════════
+Ingrese el nombre de la lista de reproducción: Mis Favoritas 2019
+Ingrese el ID de la canción: 19
 ```
 
 ---
@@ -133,8 +139,13 @@ Ingrese nombre lista: Mis Favoritas 2018
 
 ```text
 Seleccione opción: 6
-Seleccione lista: 1 (Mis Favoritas 2018)
-Ingrese ID canción: 5
+Ingrese el nombre de la nueva lista: Mis Favoritas 2019
+
+══════════════════ Listas de Reproducción Disponibles ══════════════════
+  1) Mis Favoritas 2019
+════════════════════════════════════════════════════════════
+Ingrese el nombre de la lista de reproducción: Mis Favoritas 2019
+Ingrese el ID de la canción: 19
 ```
 
 ---
@@ -145,7 +156,13 @@ Ingrese ID canción: 5
 
 ```text
 Seleccione opción: 7
-Seleccione lista: 1 (Mis Favoritas 2018)
+
+══════════════════ Listas de Reproducción Disponibles ══════════════════
+  1) Mis Favoritas 2019
+════════════════════════════════════════════════════════════
+Ingrese el nombre de la lista de reproducción: Mis Favoritas 2019
+Ingrese el ID de la canción: 19
+Canción 'Photograph' agregada exitosamente a la lista 'Mis Favoritas 2019'.
 ```
 
 ---
