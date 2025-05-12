@@ -165,3 +165,26 @@ Seleccione opción: 8
 ñau amargaita
 
 
+# Contribuciones
+
+Desarrollado por **Hugo Palomino** y **Felipe Romero**
+
+## Aportes individuales
+
+### Hugo Palomino
+- Diseñó la **interfaz visual** con colores ANSI.
+- Implementó la **barra de progreso** (`mostrar_barra_progreso`).
+- Desarrolló el **menú principal** (`mostrarMenuPrincipal`).
+- Lideró `cargar_canciones` para una lectura eficiente del archivo CSV.
+
+### Felipe Romero
+- Optimizó `show_songs` y `show_artists` con **paginación** y presentación mejorada (relacionados con `buscar_por_genero` y `buscar_por_artista`).
+- Implementó `capitalize_first` para géneros, asegurando que no se usen mayúsculas incorrectas.
+- Aseguró la **modularidad** del código.
+
+### Trabajo en conjunto
+- Implementación de `liberar_memoria` para una gestión eficiente de recursos.
+- Desarrollo de las funciones de búsqueda: `buscar_por_genero`, `buscar_por_artista`, `buscar_por_tempo`.
+- Implementación de la gestión de listas de reproducción: `crear_lista_reproduccion`, `agregar_cancion_lista`, `mostrar_canciones_lista`.
+- Colaboración en `mostrar_playlists`, garantizando un programa **funcional** y **visualmente atractivo**.
+
