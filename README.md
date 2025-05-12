@@ -95,11 +95,9 @@ Opciones:
   2) Mostrar todos los géneros disponibles
 Ingrese su opción (1-2):
 
-Seleccione opción: 2 (Mostrar todos los generos 'opcional')
 Seleccione opción: 1 (Buscar por género)
 
 Ingrese: samba
-
 
 ```
 
