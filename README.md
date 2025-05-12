@@ -8,7 +8,7 @@
 
 ## 👥 Integrantes
 
-| ![Felipe Romero](https://github.com/HugoPalomino3cm/Tarea-2-Spotifind-/blob/fe331556707ac64256fa46421fbd555a69b0bdce/1000037672_1d3674e3bb03be63b8c7aa497567429e-16_6_2024%2C%209_21_10%20p.m..jpg)| ![Hugo Palomino](https://github.com/HugoPalomino3cm/Tarea-2-Spotifind-/blob/d48628f1a78cbea3c8fe0ca7ac8cb5dbf44ae92a/fotoMia.png) |
+| ![Felipe Romero](https://github.com/HugoPalomino3cm/Tarea-2-Spotifind-/blob/3ad963c848e352f40585c1d90a62faa69bf326c7/image.png)| ![Hugo Palomino](https://github.com/HugoPalomino3cm/Tarea-2-Spotifind-/blob/d48628f1a78cbea3c8fe0ca7ac8cb5dbf44ae92a/fotoMia.png) |
 |:--:|:--:|
 | **Felipe Romero** | **Hugo Palomino** |
 
