@@ -25,6 +25,8 @@
 
 ---
 
+![GIF Externo](https://cdn.hashnode.com/res/hashnode/image/upload/v1666975601963/U7VvHXeDV.gif)
+
 ## 📦 Clonar y Compilar el Proyecto
 
 ### 1. Clonar el Repositorio
