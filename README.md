@@ -25,7 +25,7 @@
 
 ---
 
-![GIF Externo](https://cdn.hashnode.com/res/hashnode/image/upload/v1666975601963/U7VvHXeDV.gif) ![GIF Externo](https://media.tenor.com/X8854xxuQ_EAAAAM/destroy-code-mad.gif)
+![GIF Externo](https://cdn.hashnode.com/res/hashnode/image/upload/v1666975601963/U7VvHXeDV.gif)
 
 ## 📦 Clonar y Compilar el Proyecto
 
