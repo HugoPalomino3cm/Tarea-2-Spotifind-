@@ -8,7 +8,7 @@
 
 ## 👥 Integrantes
 
-| ![Felipe Romero](https://www.primeraedicion.com.ar/wp-content/uploads/2025/04/tralalero-750x375.jpg) | ![Hugo Palomino](https://images.cults3d.com/hIJZ4SvcmhPoPxg5JpDk2k-i9KM=/516x516/filters:no_upscale():format(webp)/https://fbi.cults3d.com/uploaders/41050705/illustration-file/ad5c379c-2807-49fb-ab36-e139e2cfec26/br-br-patapim.jpg) |
+| ![Felipe Romero](https://www.primeraedicion.com.ar/wp-content/uploads/2025/04/tralalero-750x375.jpg) | ![Hugo Palomino](https://github.com/HugoPalomino3cm/Tarea-2-Spotifind-/blob/d48628f1a78cbea3c8fe0ca7ac8cb5dbf44ae92a/fotoMia.png) |
 |:--:|:--:|
 | **Felipe Romero** | **Hugo Palomino** |
 
