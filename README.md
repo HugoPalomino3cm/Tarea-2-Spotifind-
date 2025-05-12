@@ -167,8 +167,6 @@ Seleccione opción: 8
 
 # Contribuciones
 
-Desarrollado por **Hugo Palomino** y **Felipe Romero**
-
 ## Aportes individuales
 
 ### Hugo Palomino
