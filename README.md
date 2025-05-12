@@ -89,7 +89,7 @@ Seleccione opción: 1
 
 ```text
 Seleccione opción: 2
-Ingrese género: pop
+Ingrese género: samba
 ```
 
 ---
@@ -100,7 +100,7 @@ Ingrese género: pop
 
 ```text
 Seleccione opción: 3
-Ingrese artista: Queen
+Ingrese artista: Kurt Cobain
 ```
 
 ---
