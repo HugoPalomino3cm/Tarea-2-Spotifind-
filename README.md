@@ -127,8 +127,6 @@ Ingrese el nombre de la nueva lista: Mis Favoritas 2019
 ══════════════════ Listas de Reproducción Disponibles ══════════════════
   1) Mis Favoritas 2019
 ════════════════════════════════════════════════════════════
-Ingrese el nombre de la lista de reproducción: Mis Favoritas 2019
-Ingrese el ID de la canción: 19
 ```
 
 ---
