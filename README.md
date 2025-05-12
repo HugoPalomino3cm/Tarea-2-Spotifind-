@@ -135,10 +135,6 @@ Seleccione categoría: 2 (Moderadas: 80-120 BPM)
 Seleccione opción: 5
 Ingrese el nombre de la nueva lista: Mis Favoritas 2019
 Lista de reproducción 'Mis Favoritas 2019' creada exitosamente.
-
-══════════════════ Listas de Reproducción Disponibles ══════════════════
-  1) Mis Favoritas 2019
-════════════════════════════════════════════════════════════
 ```
 
 ---
