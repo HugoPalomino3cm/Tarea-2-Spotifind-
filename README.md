@@ -184,7 +184,7 @@ Seleccione opción: 8
 
 ---
 
-## ⚠️ Posibles Errores Comunes (TODO)
+## ⚠️ Posibles Errores Comunes
 
 - Si el programa se ejecuta en un sistema Windows sin una terminal compatible con códigos ANSI (como `cmd.exe` sin configuración especial), los colores no se mostrarán correctamente y podrían verse como texto extraño (por ejemplo: `\033[1;32m`).
 - Mezclar scanf con fgets puede dejar caracteres residuales en el buffer.
