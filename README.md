@@ -89,7 +89,18 @@ Seleccione opción: 1
 
 ```text
 Seleccione opción: 2
-Ingrese género: samba
+
+Opciones:
+  1) Buscar por género
+  2) Mostrar todos los géneros disponibles
+Ingrese su opción (1-2):
+
+Seleccione opción: 2 (Mostrar todos los generos 'opcional')
+Seleccione opción: 1 (Buscar por género)
+
+Ingrese: samba
+
+
 ```
 
 ---
@@ -155,13 +166,16 @@ Ingrese el ID de la canción: 19
 
 ```text
 Seleccione opción: 7
-
-══════════════════ Listas de Reproducción Disponibles ══════════════════
-  1) GYM MOTIVATION
-  2) Mis Favoritas 2019
-  3) Tralalero Tralala SONGS 
-════════════════════════════════════════════════════════════
 Ingrese el nombre de la lista de reproducción: Mis Favoritas 2019
+
+══════════════════ Lista de Canciones ══════════════════
+Canción 1
+  Título: Photograph
+  Álbum: Cover Sessions, Vol. 4
+  Género: Acoustic
+  Tempo: 107.95 BPM
+Artistas: Boyce Avenue, Bea Miller
+-----------------------------------------------------
 ```
 
 ---
