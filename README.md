@@ -70,16 +70,12 @@ $OutputEncoding = [Console]::OutputEncoding = [Text.UTF8Encoding]::new()
 
 A continuación se muestra un ejemplo de cómo interactuar con Spotifind:
 
----
-
 ### 1) Cargar Canciones
 
 **Descripción:** Carga el dataset de canciones desde un archivo CSV.  
 **Nota:** Solo necesitas cargar las canciones una vez al iniciar el programa.
 
-```text
 Seleccione opción: 1
-```
 
 ---
 
@@ -87,10 +83,8 @@ Seleccione opción: 1
 
 **Descripción:** Busca canciones por género musical.
 
-```text
-Seleccione opción: 2
+Seleccione opción: 2  
 Ingrese género: samba
-```
 
 ---
 
@@ -98,10 +92,8 @@ Ingrese género: samba
 
 **Descripción:** Busca canciones por artista.
 
-```text
-Seleccione opción: 3
+Seleccione opción: 3  
 Ingrese artista: Kurt Cobain
-```
 
 ---
 
@@ -109,10 +101,8 @@ Ingrese artista: Kurt Cobain
 
 **Descripción:** Busca canciones según el rango de BPM.
 
-```text
-Seleccione opción: 4
+Seleccione opción: 4  
 Seleccione categoría: 2 (Moderadas: 80-120 BPM)
-```
 
 ---
 
@@ -120,14 +110,12 @@ Seleccione categoría: 2 (Moderadas: 80-120 BPM)
 
 **Descripción:** Crea una nueva playlist vacía.
 
-```text
-Seleccione opción: 5
-Ingrese el nombre de la nueva lista: Mis Favoritas 2019
+Seleccione opción: 5  
+Ingrese el nombre de la nueva lista: Mis Favoritas 2019  
 
-══════════════════ Listas de Reproducción Disponibles ══════════════════
-  1) Mis Favoritas 2019
+══════════════════ Listas de Reproducción Disponibles ══════════════════  
+  1) Mis Favoritas 2019  
 ════════════════════════════════════════════════════════════
-```
 
 ---
 
@@ -135,16 +123,10 @@ Ingrese el nombre de la nueva lista: Mis Favoritas 2019
 
 **Descripción:** Agrega una canción existente a una playlist usando su ID.
 
-```text
-Seleccione opción: 6
-Ingrese el nombre de la nueva lista: Mis Favoritas 2019
-
-══════════════════ Listas de Reproducción Disponibles ══════════════════
-  1) Mis Favoritas 2019
-════════════════════════════════════════════════════════════
-Ingrese el nombre de la lista de reproducción: Mis Favoritas 2019
-Ingrese el ID de la canción: 19
-```
+Seleccione opción: 6  
+Ingrese el nombre de la lista de reproducción: Mis Favoritas 2019  
+Ingrese el ID de la canción: 19  
+Canción 'Photograph' agregada exitosamente a la lista 'Mis Favoritas 2019'.
 
 ---
 
@@ -152,16 +134,15 @@ Ingrese el ID de la canción: 19
 
 **Descripción:** Muestra las canciones dentro de una playlist.
 
-```text
-Seleccione opción: 7
+Seleccione opción: 7  
 
-══════════════════ Listas de Reproducción Disponibles ══════════════════
-  1) Mis Favoritas 2019
-════════════════════════════════════════════════════════════
-Ingrese el nombre de la lista de reproducción: Mis Favoritas 2019
-Ingrese el ID de la canción: 19
-Canción 'Photograph' agregada exitosamente a la lista 'Mis Favoritas 2019'.
-```
+══════════════════ Listas de Reproducción Disponibles ══════════════════  
+  1) Mis Favoritas 2019  
+════════════════════════════════════════════════════════════  
+Ingrese el nombre de la lista de reproducción: Mis Favoritas 2019  
+
+Canciones en la lista 'Mis Favoritas 2019':  
+  - [19] Photograph - Ed Sheeran
 
 ---
 
@@ -169,11 +150,8 @@ Canción 'Photograph' agregada exitosamente a la lista 'Mis Favoritas 2019'.
 
 **Descripción:** Cierra el programa.
 
-```text
 Seleccione opción: 8
-```
 
----
 
 ## ⚠️ Posibles Errores Comunes (TODO)
 
